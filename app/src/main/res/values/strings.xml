@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WorkoutApp</string>
+    <string name="home">Home</string>
+    <string name="analytical">Analytical</string>
+    <string name="search">Search</string>
+    <string name="calendar">Calendar</string>
+    <string name="map">Map</string>
 </resources>
