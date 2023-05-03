@@ -7,11 +7,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.workoutapp.adapter.WorkoutAdapter;
 import com.example.workoutapp.adapter.WorkoutCategoryAdapter;
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.retrofit.YouTubeApiService;
@@ -32,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WorkoutViewModel workoutViewModel;
     private WorkoutCategoryAdapter adapter;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
         workoutViewModel.getDistinctWorkoutTypes().observe(this, workoutTypes -> {
+
             adapter.setWorkoutTypeList(workoutTypes);
         });
 
@@ -54,11 +54,23 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return true;
+            }
+        });
+
         // Fetch workouts and insert them into the database using Retrofit
         fetchWorkouts();
     }
-
-
 
     private void fetchWorkouts() {
         List<String> workoutTypes = Arrays.asList("swim workout", "badminton workout", "yoga workout", "running workout", "cycling workout", "strength training workout", "pilates workout", "dancing workout", "hiking workout", "boxing workout", "kickboxing workout", "MMA workout", "tennis workout", "basketball workout", "football workout", "soccer workout", "volleyball workout");
@@ -76,14 +88,18 @@ public class MainActivity extends AppCompatActivity {
 
         YouTubeApiService service = retrofit.create(YouTubeApiService.class);
         Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
-
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override
             public void onResponse(Call<YouTubeResponse> call, Response<YouTubeResponse> response) {
                 if (response.isSuccessful()) {
                     List<Workout> workouts = new ArrayList<>();
                     for (YouTubeResponse.Item item : response.body().getItems()) {
-                        workouts.add(new Workout(item.snippet.title, item.id.videoId, workoutType));
+
+                        String title = item.snippet.title;
+                        String videoId = item.id.videoId;
+                        String thumbnailUrl = item.snippet.thumbnails.high.url; // Use high quality thumbnail
+                        workouts.add(new Workout(title, videoId, workoutType, thumbnailUrl));
+
                     }
                     workoutViewModel.insert(workouts);
                 }

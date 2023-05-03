@@ -1,8 +1,10 @@
 package com.example.workoutapp.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
 import com.example.workoutapp.entity.Workout;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,13 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
     public void onBindViewHolder(@NonNull WorkoutViewHolder holder, int position) {
         Workout workout = workoutList.get(position);
         holder.title.setText(workout.getTitle());
+        if (workout.getImageUrl() != null) {
+            Picasso.get().load(workout.getImageUrl()).into(holder.thumbnail);
+        } else {
+            holder.thumbnail.setImageResource(R.drawable.ic_launcher_background);
+        }
+
+
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
@@ -53,10 +63,12 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutV
 
     static class WorkoutViewHolder extends RecyclerView.ViewHolder {
         TextView title;
+        ImageView thumbnail;
 
         WorkoutViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.workout_title);
+            thumbnail = itemView.findViewById(R.id.workout_image);
         }
     }
 

@@ -49,5 +49,10 @@ public class WorkoutRepository {
     public LiveData<List<Workout>> getWorkoutsByType(String workoutType) {
         return workoutDao.getWorkoutsByType(workoutType);
     }
+    public LiveData<List<Workout>> searchWorkouts(String query) {
+        // Use your repository or DAO to search workouts in the database
+        // based on the query
+        return workoutDao.searchWorkouts(query);
+    }
 
 }

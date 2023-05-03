@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.squareup.picasso:picasso:2.8'
 // Add this line
     implementation 'com.google.android.exoplayer:exoplayer:2.18.2'
     def lifecycle_version = "2.5.1"

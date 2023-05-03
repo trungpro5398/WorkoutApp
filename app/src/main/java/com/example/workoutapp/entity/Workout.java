@@ -5,16 +5,26 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "workout")
 public class Workout {
+    private String imageUrl;
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String title;
     private String videoId;
     private String type;
     // Add a constructor with a type parameter
-    public Workout(String title, String videoId, String type) {
+    public Workout(String title, String videoId, String type, String imageUrl) {
         this.title = title;
         this.videoId = videoId;
         this.type = type;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     // Add a getter and setter for the type attribute

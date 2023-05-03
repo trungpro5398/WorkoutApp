@@ -21,7 +21,6 @@ public class WorkoutListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_workout_list);
 
         String workoutType = getIntent().getStringExtra("workoutType");
-
         RecyclerView recyclerView = findViewById(R.id.workout_list_recycler_view);
         adapter = new WorkoutAdapter();
         recyclerView.setAdapter(adapter);
@@ -29,6 +28,7 @@ public class WorkoutListActivity extends AppCompatActivity {
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
         workoutViewModel.getWorkoutsByType(workoutType).observe(this, workouts -> {
+
             adapter.setWorkoutList(workouts);
         });
 

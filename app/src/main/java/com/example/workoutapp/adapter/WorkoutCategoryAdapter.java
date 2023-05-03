@@ -17,9 +17,13 @@ import java.util.List;
 
 public class WorkoutCategoryAdapter extends RecyclerView.Adapter<WorkoutCategoryAdapter.WorkoutCategoryHolder> {
 
-    private List<Workout> workoutCategories = new ArrayList<>();
     private OnItemClickListener listener;
     private List<WorkoutType> workoutTypes = new ArrayList<>();
+    private List<WorkoutType> filteredWorkoutTypes;
+
+    public WorkoutCategoryAdapter() {
+        this.filteredWorkoutTypes = new ArrayList<>(workoutTypes);
+    }
 
     @NonNull
     @Override
@@ -31,17 +35,34 @@ public class WorkoutCategoryAdapter extends RecyclerView.Adapter<WorkoutCategory
 
     @Override
     public void onBindViewHolder(@NonNull WorkoutCategoryHolder holder, int position) {
-        WorkoutType currentWorkoutType = workoutTypes.get(position);
+        WorkoutType currentWorkoutType = filteredWorkoutTypes.get(position);
         holder.workoutTypeTextView.setText(currentWorkoutType.getType());
     }
 
     @Override
     public int getItemCount() {
-        return workoutTypes.size();
+        return filteredWorkoutTypes.size();
     }
 
     public void setWorkoutTypeList(List<WorkoutType> workoutTypes) {
         this.workoutTypes = workoutTypes;
+        this.filteredWorkoutTypes = new ArrayList<>(workoutTypes);
+        notifyDataSetChanged();
+    }
+
+    public void filter(String query) {
+        filteredWorkoutTypes.clear();
+
+        if (query.isEmpty()) {
+            filteredWorkoutTypes.addAll(workoutTypes);
+        } else {
+            for (WorkoutType workoutType : workoutTypes) {
+                if (workoutType.getType().toLowerCase().contains(query.toLowerCase())) {
+                    filteredWorkoutTypes.add(workoutType);
+                }
+            }
+        }
+
         notifyDataSetChanged();
     }
 
@@ -55,7 +76,7 @@ public class WorkoutCategoryAdapter extends RecyclerView.Adapter<WorkoutCategory
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(workoutTypes.get(position));
+                    listener.onItemClick(filteredWorkoutTypes.get(position));
                 }
             });
         }

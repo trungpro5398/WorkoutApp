@@ -25,5 +25,8 @@ public interface WorkoutDao {
     @Query("SELECT * FROM workout WHERE type = :workoutType")
     LiveData<List<Workout>> getWorkoutsByType(String workoutType);
 
+    @Query("SELECT * FROM workout WHERE title LIKE :query")
+    LiveData<List<Workout>> searchWorkouts(String query);
+
 }
 

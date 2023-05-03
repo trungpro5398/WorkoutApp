@@ -32,7 +32,6 @@ public class VideoActivity extends AppCompatActivity {
                     "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + videoId + "\" frameborder=\"0\" allowfullscreen video player\" frameborder=\"0\" allow=\"accelerometer autoplay clipboard-write encrypted-media gyroscope picture-in-picture\"></iframe>" +
                     "</body></html>";
             webView.loadData(videoHtml, "text/html", "utf-8");
-            System.out.println(videoHtml);
         } else {
             Toast.makeText(this, "Video not found", Toast.LENGTH_SHORT).show();
             finish();

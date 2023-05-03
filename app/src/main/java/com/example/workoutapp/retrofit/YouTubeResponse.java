@@ -19,7 +19,15 @@ public class YouTubeResponse {
 
         public static class Snippet {
             public String title;
+            public Thumbnails thumbnails;
+
+            public static class Thumbnails {
+                public High high;
+
+                public static class High {
+                    public String url;
+                }
+            }
         }
     }
 }
-
