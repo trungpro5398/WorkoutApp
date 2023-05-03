@@ -28,6 +28,9 @@ android {
 }
 
 dependencies {
+    // Other dependencies
+    implementation 'com.google.android.material:material:1.4.0' // Adjust the version if necessary
+
     implementation 'com.squareup.picasso:picasso:2.8'
 // Add this line
     implementation 'com.google.android.exoplayer:exoplayer:2.18.2'

@@ -1,21 +1,24 @@
 package com.example.workoutapp;
-import android.content.Intent;
+
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.workoutapp.fragment.AnalyticalFragment;
+import com.example.workoutapp.fragment.CalendarFragment;
+import com.example.workoutapp.fragment.HomeFragment;
+import com.example.workoutapp.fragment.MapFragment;
+import com.example.workoutapp.fragment.SearchFragment;
+import com.example.workoutapp.viewmodel.WorkoutViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import android.widget.Toast;
 
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.workoutapp.adapter.WorkoutCategoryAdapter;
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.retrofit.YouTubeApiService;
 import com.example.workoutapp.retrofit.YouTubeResponse;
-import com.example.workoutapp.viewmodel.WorkoutViewModel;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,45 +32,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private WorkoutViewModel workoutViewModel;
-    private WorkoutCategoryAdapter adapter;
-    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.workout_recycler_view);
-        adapter = new WorkoutCategoryAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
-        workoutViewModel.getDistinctWorkoutTypes().observe(this, workoutTypes -> {
 
-            adapter.setWorkoutTypeList(workoutTypes);
-        });
+        // Set up the bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
-        adapter.setOnItemClickListener(workoutType -> {
-            Intent intent = new Intent(MainActivity.this, WorkoutListActivity.class);
-            intent.putExtra("workoutType", workoutType.getType());
-            startActivity(intent);
-        });
-
-        searchView = findViewById(R.id.search_view);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
-                return true;
-            }
-        });
-
+        // Set the default fragment to HomeFragment
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new HomeFragment())
+                .commit();
         // Fetch workouts and insert them into the database using Retrofit
         fetchWorkouts();
     }
@@ -113,4 +93,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+    // Bottom navigation item selection listener
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            menuItem -> {
+                Fragment selectedFragment = null;
+
+                switch (menuItem.getItemId()) {
+                    case R.id.home:
+                        selectedFragment = new HomeFragment();
+                        break;
+                    case R.id.analytical:
+                        selectedFragment = new AnalyticalFragment();
+                        break;
+                    case R.id.search:
+                        selectedFragment = new SearchFragment();
+                        break;
+                    case R.id.calendar:
+                        selectedFragment = new CalendarFragment();
+                        break;
+                    case R.id.map:
+                        selectedFragment = new MapFragment();
+                        break;
+                }
+
+                // Replace the current fragment with the selected one
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .commit();
+
+                return true;
+            };
 }
