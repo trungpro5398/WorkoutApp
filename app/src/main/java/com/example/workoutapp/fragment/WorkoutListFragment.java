@@ -10,20 +10,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
 import com.example.workoutapp.adapter.WorkoutAdapter;
+import com.example.workoutapp.databinding.WorkoutListFragmentBinding;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 
 public class WorkoutListFragment extends Fragment {
     private WorkoutViewModel workoutViewModel;
     private WorkoutAdapter adapter;
+    private WorkoutListFragmentBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.workout_list_fragment, container, false);
+        binding = WorkoutListFragmentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -33,10 +35,9 @@ public class WorkoutListFragment extends Fragment {
         Bundle args = getArguments();
         String workoutType = args != null ? args.getString("workoutType") : "";
 
-        RecyclerView recyclerView = view.findViewById(R.id.workout_list_recycler_view);
         adapter = new WorkoutAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.workoutListRecyclerView.setAdapter(adapter);
+        binding.workoutListRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         workoutViewModel = new ViewModelProvider(requireActivity()).get(WorkoutViewModel.class);
         workoutViewModel.getWorkoutsByType(workoutType).observe(getViewLifecycleOwner(), workouts -> {
@@ -55,7 +56,11 @@ public class WorkoutListFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+    }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

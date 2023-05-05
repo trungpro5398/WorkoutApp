@@ -7,11 +7,17 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/activity_video.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/activity_workout_list.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/calendar_event_item.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/calendar_fragment.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2265625" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/navigation.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/search_fragment.xml" value="0.46298342541436466" />
+        <entry key="app/src/main/res/layout/video_fragment.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/video_view.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/workout_category_item.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/workout_item.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2265625" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.233" />
       </map>
