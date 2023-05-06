@@ -15,6 +15,8 @@ import com.example.workoutapp.fragment.CalendarFragment;
 import com.example.workoutapp.fragment.HomeFragment;
 import com.example.workoutapp.fragment.MapFragment;
 import com.example.workoutapp.fragment.SearchFragment;
+import com.example.workoutapp.navigation.BottomNavigation;
+import com.example.workoutapp.navigation.NavigationDrawer;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -51,62 +53,26 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // Handle navigation view item clicks here.
-                int id = item.getItemId();
+        // Initialize and set up NavigationDrawer
+        NavigationDrawer navigationDrawer = new NavigationDrawer(this, drawerLayout);
+        navigationDrawer.setupNavigation(toolbar, navigationItemSelectedListener);
 
-                Fragment selectedFragment = null;
+        // Initialize and set up BottomNavigation
+        BottomNavigation bottomNavigation = new BottomNavigation(this);
+        bottomNavigation.setupBottomNavigation(navListener);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
 
-                switch (id) {
-                    case R.id.nav_home:
-                        selectedFragment = new HomeFragment();
-                        break;
-                    case R.id.nav_analytical:
-                        selectedFragment = new AnalyticalFragment();
-                        break;
-                    case R.id.nav_search:
-                        selectedFragment = new SearchFragment();
-                        break;
-                    case R.id.nav_calendar:
-                        selectedFragment = new CalendarFragment();
-                        break;
-                    case R.id.nav_map:
-                        selectedFragment = new MapFragment();
-                        break;
-                    // Add more cases for other menu items if needed
-                }
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
-
-                DrawerLayout drawer = findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        });
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .commit();
-
-        fetchWorkouts();
+//         fetchWorkouts();
     }
 
     private void fetchWorkouts() {
-        List<String> workoutTypes = Arrays.asList("swim workout", "badminton workout", "yoga workout", "running workout", "cycling workout", "strength training workout", "pilates workout", "dancing workout", "hiking workout", "boxing workout", "kickboxing workout", "MMA workout", "tennis workout", "basketball workout", "football workout", "soccer workout", "volleyball workout");
-        //List<String> workoutTypes = Arrays.asList("workout beginner, workout intermediate, workout advance");
+        //List<String> workoutTypes = Arrays.asList("swim workout", "badminton workout", "yoga workout", "running workout", "cycling workout", "strength training workout", "pilates workout", "dancing workout", "hiking workout", "boxing workout", "kickboxing workout", "MMA workout", "tennis workout", "basketball workout", "football workout", "soccer workout", "volleyball workout");
+        List<String> workoutTypes = Arrays.asList("workout beginner, workout intermediate, workout advance");
         for (String workoutType : workoutTypes) {
             fetchWorkoutVideosByType(workoutType);
         }
@@ -119,19 +85,23 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         YouTubeApiService service = retrofit.create(YouTubeApiService.class);
-        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
+//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
+        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
+
+
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override
             public void onResponse(Call<YouTubeResponse> call, Response<YouTubeResponse> response) {
+                System.out.println(response);
                 if (response.isSuccessful()) {
                     List<Workout> workouts = new ArrayList<>();
                     for (YouTubeResponse.Item item : response.body().getItems()) {
 
                         String title = item.snippet.title;
                         String videoId = item.id.videoId;
-                        String thumbnailUrl = item.snippet.thumbnails.high.url; // Use high quality thumbnail
-                        workouts.add(new Workout(title, videoId, workoutType, thumbnailUrl));
-
+                        String thumbnailUrl = item.snippet.thumbnails.high.url; // Use high-quality thumbnail
+                        String level = detectWorkoutLevel(title); // Detect workout level based on the title
+                        workouts.add(new Workout(title, videoId, workoutType, thumbnailUrl, level)); // Add level to Workout object
                     }
                     workoutViewModel.insert(workouts);
                 }
@@ -142,6 +112,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error fetching workouts", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private String detectWorkoutLevel(String title) {
+        String lowerCaseTitle = title.toLowerCase();
+        if (lowerCaseTitle.contains("beginner") || lowerCaseTitle.contains("basic") || lowerCaseTitle.contains("easy")) {
+            return "beginner";
+        } else if (lowerCaseTitle.contains("intermediate")) {
+            return "intermediate";
+        } else if (lowerCaseTitle.contains("advanced") || lowerCaseTitle.contains("expert") || lowerCaseTitle.contains("hard")) {
+            return "advanced";
+        }
+        return "intermediate";
     }
 
     // Bottom navigation item selection listener
@@ -174,4 +155,40 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             };
+
+    private final NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+            menuItem -> {
+                // Handle navigation view item clicks here.
+                int id = menuItem.getItemId();
+
+                Fragment selectedFragment = null;
+
+                switch (id) {
+                    case R.id.nav_home:
+                        selectedFragment = new HomeFragment();
+                        break;
+                    case R.id.nav_analytical:
+                        selectedFragment = new AnalyticalFragment();
+                        break;
+                    case R.id.nav_search:
+                        selectedFragment = new SearchFragment();
+                        break;
+                    case R.id.nav_calendar:
+                        selectedFragment = new CalendarFragment();
+                        break;
+                    case R.id.nav_map:
+                        selectedFragment = new MapFragment();
+                        break;
+                    // Add more cases for other menu items if needed
+                }
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, selectedFragment)
+                        .commit();
+
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            };
+
 }

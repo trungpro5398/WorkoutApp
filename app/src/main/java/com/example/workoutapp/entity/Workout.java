@@ -11,12 +11,14 @@ public class Workout {
     private String title;
     private String videoId;
     private String type;
+    private String level;
     // Add a constructor with a type parameter
-    public Workout(String title, String videoId, String type, String imageUrl) {
+    public Workout(String title, String videoId, String type, String imageUrl, String level) {
         this.title = title;
         this.videoId = videoId;
         this.type = type;
         this.imageUrl = imageUrl;
+        this.level = level;
     }
 
     public String getImageUrl() {
@@ -58,5 +60,12 @@ public class Workout {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
+    }
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 }

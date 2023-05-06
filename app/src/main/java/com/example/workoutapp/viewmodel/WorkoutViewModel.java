@@ -43,5 +43,8 @@ public class WorkoutViewModel extends AndroidViewModel {
         return workoutRepository.searchWorkouts(query);
     }
 
+    public LiveData<List<Workout>> getRandomWorkoutsByLevel(String level, int limit) {
+        return workoutRepository.getRandomWorkoutsByLevel(level, limit);
+    }
 
 }

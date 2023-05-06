@@ -54,5 +54,8 @@ public class WorkoutRepository {
         // based on the query
         return workoutDao.searchWorkouts(query);
     }
+    public LiveData<List<Workout>> getRandomWorkoutsByLevel(String level, int limit) {
+        return workoutDao.getRandomWorkoutsByLevel(level, limit);
+    }
 
 }

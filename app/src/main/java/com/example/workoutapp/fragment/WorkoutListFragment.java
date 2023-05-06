@@ -47,6 +47,7 @@ public class WorkoutListFragment extends Fragment {
         adapter.setOnItemClickListener(workout -> {
             VideoFragment videoFragment = new VideoFragment();
             Bundle videoArgs = new Bundle();
+            System.out.println(workout.getLevel());
             videoArgs.putString("videoId", workout.getVideoId());
             videoFragment.setArguments(videoArgs);
 

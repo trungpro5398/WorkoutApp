@@ -5,7 +5,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface YouTubeApiService {
-    @GET("search?part=snippet&type=video&maxResults=10")
+    @GET("search?part=snippet&type=video&maxResults=100")
     Call<YouTubeResponse> getWorkoutVideos(@Query("q") String workoutType, @Query("key") String apiKey);
 }
 
