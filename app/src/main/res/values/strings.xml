@@ -5,7 +5,12 @@
     <string name="search">Search</string>
     <string name="calendar">Calendar</string>
     <string name="map">Map</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--    Home page strings -->
+    <string name="today_progress"><u>Today\'s Progress</u></string>
+
 
 </resources>
