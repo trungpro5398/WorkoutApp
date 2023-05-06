@@ -4,7 +4,9 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
 import com.example.workoutapp.dao.WorkoutDao;
+import com.example.workoutapp.dao.WorkoutRecordDao;
 import com.example.workoutapp.entity.Workout;
+import com.example.workoutapp.entity.WorkoutRecord;
 
 import android.content.Context;
 
@@ -14,10 +16,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Workout.class}, version = 4)
+@Database(entities = {Workout.class, WorkoutRecord.class}, version = 6)
 public abstract class WorkoutDatabase extends RoomDatabase {
     public abstract WorkoutDao workoutDao();
-
+    public abstract WorkoutRecordDao workoutRecordDao();
     private static volatile WorkoutDatabase INSTANCE;
     //we create an ExecutorService with a fixed thread pool so we can later run database operations asynchronously on a background thread.
     private static final int NUMBER_OF_THREADS = 4;
