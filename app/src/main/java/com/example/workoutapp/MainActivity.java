@@ -1,5 +1,6 @@
 package com.example.workoutapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -21,12 +22,17 @@ import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.retrofit.YouTubeApiService;
 import com.example.workoutapp.retrofit.YouTubeResponse;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,12 +46,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    FirebaseAuth auth;
+    FirebaseUser user;
+
     private WorkoutViewModel workoutViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Open Login and registration first before any other fragment, Can comment it out to test other fragements !
+        auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
+
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
 
@@ -179,16 +199,29 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_map:
                         selectedFragment = new MapFragment();
                         break;
+                    case R.id.nav_sign_out:
+                        signOut();
+                        break;
                     // Add more cases for other menu items if needed
                 }
 
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
+                if (selectedFragment != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, selectedFragment)
+                            .commit();
+                }
 
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             };
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        // Redirect to the login activity or another appropriate activity after signing out
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+        finish();
+
+    }
 
 }
