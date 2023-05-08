@@ -11,6 +11,7 @@
 
     <!--    Home page strings -->
     <string name="today_progress"><u>Today\'s Progress</u></string>
+    <string name="login" />
 
     <!-- Workout record enter strings -->
     <string-array name="workout_record_types">
@@ -28,4 +29,31 @@
         <item>2hr</item>
     </string-array>
 
+    <!--    login and registration strings -->
+
+    <string name="login1">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="register">Register</string>
+    <string name="click_to_login"><u>Login</u> </string>
+    <string name="click_to_login1">Login </string>
+
+    <string name="logout">logout</string>
+    <string name="click_to_register">Sign Up</string>
+
+
+    <string name="hello_rookies">Hello rookies,</string>
+    <string name="enter_your_information_below_or_nlogin_with_a_other_account">Enter your information below or\nlogin with a other account</string>
+    <string name="sign_up1"> <u>Sign up</u> </string>
+    <string name="sign_up"> Sign up </string>
+    <string name="signup_image">signup image</string>
+    <string name="height">Height in Cm</string>
+    <string name="age">Age</string>
+    <string name="weight">Weight in Kg</string>
+    <string name="submit">Submit</string>
+    <string name="name">Name</string>
+    <string name="select_your_fitness_goal">Select your Fitness Goal</string>
+    <string name="please_enter_your_details">Please Enter Your Details</string>
+    <string name="Choose_your_Goal"> Choose Your Goal</string>
+    <string name="Choose_your_Gender"> Gender</string>
 </resources>
