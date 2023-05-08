@@ -1,13 +1,11 @@
 package com.example.workoutapp.repository;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.workoutapp.dao.WorkoutRecordDao;
-import com.example.workoutapp.database.WorkoutDatabase;
-import com.example.workoutapp.entity.Workout;
+import com.example.workoutapp.entity.database.WorkoutDatabase;
 import com.example.workoutapp.entity.WorkoutRecord;
 
 import java.util.List;

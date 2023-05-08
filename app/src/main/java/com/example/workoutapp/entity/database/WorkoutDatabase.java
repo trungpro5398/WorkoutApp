@@ -1,4 +1,4 @@
-package com.example.workoutapp.database;
+package com.example.workoutapp.entity.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

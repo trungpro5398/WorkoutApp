@@ -12,5 +12,20 @@
     <!--    Home page strings -->
     <string name="today_progress"><u>Today\'s Progress</u></string>
 
+    <!-- Workout record enter strings -->
+    <string-array name="workout_record_types">
+        <item>Running</item>
+        <item>Walking</item>
+        <item>Cycling</item>
+        <item>Weights</item>
+        <item>Calisthenics</item>
+    </string-array>
+
+    <string-array name="workout_record_durations">
+        <item>15min</item>
+        <item>30min</item>
+        <item>1hr</item>
+        <item>2hr</item>
+    </string-array>
 
 </resources>

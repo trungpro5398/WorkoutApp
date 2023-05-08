@@ -12,14 +12,16 @@ public class WorkoutRecord {
     private String workoutDuration;
     private String workoutDate;
 
-    public WorkoutRecord(int id, String workoutType, String workoutDuration, String workoutDate) {
-        this.id = id;
+    public WorkoutRecord(String workoutType, String workoutDuration, String workoutDate) {
         this.workoutType = workoutType;
         this.workoutDuration = workoutDuration;
         this.workoutDate = workoutDate;
     }
 
+
     public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getWorkoutDate() {
         return workoutDate;
