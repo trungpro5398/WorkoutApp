@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.example.workoutapp.dao.WorkoutDao;
-import com.example.workoutapp.database.WorkoutDatabase;
+import com.example.workoutapp.entity.database.WorkoutDatabase;
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutType;
 

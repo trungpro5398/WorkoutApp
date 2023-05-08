@@ -2,6 +2,7 @@ package com.example.workoutapp.viewmodel;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
@@ -14,7 +15,7 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     private WorkoutRecordRepository wrRepository;
     private LiveData<List<WorkoutRecord>> allWorkoutRecords;
 
-    public WorkoutRecordViewModel (Application application) {
+    public WorkoutRecordViewModel (@NonNull Application application) {
         super(application);
         wrRepository = new WorkoutRecordRepository(application);
         allWorkoutRecords = wrRepository.getAllWorkoutRecords();
