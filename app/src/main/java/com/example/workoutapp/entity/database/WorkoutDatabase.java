@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Workout.class, WorkoutRecord.class}, version = 6)
+@Database(entities = {Workout.class, WorkoutRecord.class}, version = 7)
 public abstract class WorkoutDatabase extends RoomDatabase {
     public abstract WorkoutDao workoutDao();
     public abstract WorkoutRecordDao workoutRecordDao();

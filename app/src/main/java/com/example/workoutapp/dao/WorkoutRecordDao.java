@@ -1,6 +1,7 @@
 package com.example.workoutapp.dao;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -20,6 +21,9 @@ public interface WorkoutRecordDao {
 
     @Query("SELECT * FROM workout_record")
     LiveData<List<WorkoutRecord>> getAllWorkoutRecords();
+
+    @Query("SELECT workoutDuration, workoutType FROM workout_record WHERE workoutDate = :workoutDate")
+    LiveData<List<Workout_Record_Subinfo>> getAllWorkoutRecordsByDate(String workoutDate);
 
 }
 
