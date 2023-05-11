@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/layout/activity_workout_list.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/calendar_event_item.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/calendar_fragment.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2265625" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.29393115942028986" />
