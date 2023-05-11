@@ -14,6 +14,7 @@ import com.example.workoutapp.fragment.AnalyticalFragment;
 import com.example.workoutapp.fragment.CalendarFragment;
 import com.example.workoutapp.fragment.HomeFragment;
 import com.example.workoutapp.fragment.MapFragment;
+import com.example.workoutapp.fragment.ProfileFragment;
 import com.example.workoutapp.fragment.SearchFragment;
 import com.example.workoutapp.navigation.BottomNavigation;
 import com.example.workoutapp.navigation.NavigationDrawer;
@@ -203,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.map:
             case R.id.nav_map:
                 selectedFragment = new MapFragment();
+                break;
+            case R.id.nav_profile:
+                selectedFragment = new ProfileFragment();
                 break;
             case R.id.nav_sign_out:
                 signOut();
