@@ -129,6 +129,8 @@ public class AnalyticalFragment extends Fragment {
                 String selectedDate = String.format("%d-%02d-%02d", y, m + 1, d);
 
 
+
+
                 // The fancy observer model for this DO NOT EDIT
                 workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
 
