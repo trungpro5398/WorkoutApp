@@ -19,6 +19,7 @@ import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutRecord;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 
+
 import java.util.List;
 
 public class AnalyticalFragment extends Fragment {
