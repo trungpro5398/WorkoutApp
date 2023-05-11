@@ -154,8 +154,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-
+        workoutRecordViewModel.getTotalCalories().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                binding.caloriesValue.setText(Integer.toString(integer));
+            }
+        });
 
     }
 

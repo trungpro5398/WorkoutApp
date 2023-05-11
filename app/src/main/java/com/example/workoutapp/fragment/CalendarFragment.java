@@ -1,6 +1,7 @@
 package com.example.workoutapp.fragment;
 
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
@@ -26,6 +28,7 @@ import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import java.lang.reflect.Array;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class CalendarFragment extends Fragment {
 
 
@@ -48,6 +51,7 @@ public class CalendarFragment extends Fragment {
         calendarSelect();
 
         binding.selectButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 WorkoutRecord record = new WorkoutRecord(wType, wDuration, wDate);

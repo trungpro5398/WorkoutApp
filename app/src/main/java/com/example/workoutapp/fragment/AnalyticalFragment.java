@@ -1,5 +1,6 @@
 package com.example.workoutapp.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -69,20 +71,7 @@ public class AnalyticalFragment extends Fragment {
         pieChart.invalidate();
 
         calendarView = binding.weekCalendarView;
-//        calendarView.setDayBinder(new WeekDayBinder<DayViewContainer>() {
-//            @NonNull
-//            @Override
-//            public DayViewContainer create(@NonNull View view) {
-//                return new DayViewContainer(view);
-//            }
-//
-//            @Override
-//            public void bind(@NonNull DayViewContainer container, WeekDay weekDay) {
-//                container.day = weekDay;
-//                container.textView.setText((weekDay.getDate().getDayOfMonth()));
-//
-//            }
-//        });
+
         View view = binding.getRoot();
         adapter = new WorkoutRecordAdapter();
         binding.workoutRecordRecyclerView.setAdapter(adapter);
@@ -125,6 +114,7 @@ public class AnalyticalFragment extends Fragment {
             /*
             The function that triggers when the date is changed.
              */
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int y, int m, int d) {
                 String selectedDate = String.format("%d-%02d-%02d", y, m + 1, d);
 
@@ -188,18 +178,3 @@ public class AnalyticalFragment extends Fragment {
 }
 
 
-//public class DayViewContainer  {
-//     TextView textView;
-//     WeekDay day;
-//
-//    public DayViewContainer(View view) {
-//
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                textView = view.findViewById(R.id.calendarDayText);
-//
-//            }
-//        });
-//    }
-//}

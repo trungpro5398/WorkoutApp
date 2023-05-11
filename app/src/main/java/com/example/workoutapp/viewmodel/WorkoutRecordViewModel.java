@@ -10,17 +10,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.workoutapp.dao.Workout_Record_Subinfo;
 import com.example.workoutapp.entity.WorkoutRecord;
+import com.example.workoutapp.model.WorkoutCalorieCalculator;
+import com.example.workoutapp.model.WorkoutUtils;
+import com.example.workoutapp.model.WorkoutType;
 import com.example.workoutapp.repository.WorkoutRecordRepository;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class WorkoutRecordViewModel extends AndroidViewModel {
@@ -34,17 +34,42 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     private String todayDisplayDate = getTodayDate(DISPLAY_DATE_PATTERN);
     private LiveData<Integer> dailyDuration;
 
+    private LiveData<Integer> totalCalories;
+
+    private LiveData<List<WorkoutRecord>> todayWorkoutRecords;
     private String today;
+
+    private HashMap<WorkoutType, Integer> workoutTypeDurations;
 
     public WorkoutRecordViewModel (@NonNull Application application) {
         super(application);
         wrRepository = new WorkoutRecordRepository(application);
         allWorkoutRecords = wrRepository.getAllWorkoutRecords();
         today = getTodayDate();
+        todayWorkoutRecords = Transformations.map(allWorkoutRecords, records -> {
+                    return getTodayWorkoutRecords(records);
+                });
         dailyDuration = Transformations.map(allWorkoutRecords, records -> {
             return getTodayWorkoutDuration(records);
         });
+        totalCalories = Transformations.map(todayWorkoutRecords, records -> {
+            return calculateTotalCalories(records);
+        });
     }
+
+    private List<WorkoutRecord> getTodayWorkoutRecords(List<WorkoutRecord> records) {
+        List<WorkoutRecord> todayRecords = new ArrayList<>();
+        if (records != null){
+            for (WorkoutRecord record: records
+            ) {
+                if (record.getWorkoutDate().equals(today) ) {
+                    todayRecords.add(record);
+                }
+            }
+        }
+        return todayRecords;
+    }
+
     private Integer calculateDurationByDate(String date, List<WorkoutRecord> records) {
         Integer totalDuration = 0;
         if (records != null){
@@ -78,7 +103,7 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     }
 
     private static String getTodayDate(){
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(FILTER_DATE_PATTERN);
         String todayDate = dateFormat.format(LocalDate.now());
         return todayDate;
     }
@@ -104,7 +129,37 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
         return todayDisplayDate;
     }
 
-//    private LiveDatacalculateTotalCalories(){
-//
-//    }
+    private Integer calculateTotalCalories(List<WorkoutRecord> records){
+        WorkoutUtils mapper = WorkoutUtils.getWorkoutMapper();
+        HashMap<WorkoutType, Integer> caloriesTable = new HashMap<>();
+        HashMap<WorkoutType, Integer> durationMap = WorkoutUtils.getWorkoutTypeIntMap();
+        for (WorkoutRecord record: records
+             ) {
+            String sWorkoutType = record.getWorkoutType();
+            WorkoutType workoutType = mapper.mapStrToWorkoutType(sWorkoutType);
+            Integer durationMins = WorkoutUtils.convertToIntDuration(record.getWorkoutDuration());
+            Integer calories = WorkoutCalorieCalculator.getWorkoutCalories(workoutType, durationMins);
+            Integer currentCal = caloriesTable.get(workoutType) == null ? 0 : caloriesTable.get(workoutType);
+            Integer updatedCalories = currentCal + calories;
+            caloriesTable.put(workoutType, updatedCalories);
+            durationMap.put(workoutType, durationMins + durationMap.get(workoutType));
+
+
+        }
+
+        Integer totalCalories = 0;
+        if (caloriesTable.values() != null){
+            for (Integer calorie : caloriesTable.values()) {
+                totalCalories += calorie;
+            }
+        }
+        workoutTypeDurations = durationMap;
+
+        return totalCalories;
+    }
+
+    public LiveData<Integer> getTotalCalories() {
+        return totalCalories;
+    }
+
 }
