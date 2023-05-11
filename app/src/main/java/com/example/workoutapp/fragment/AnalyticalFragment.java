@@ -36,10 +36,11 @@ import com.kizitonwose.calendar.view.ViewContainer;
 import com.kizitonwose.calendar.view.WeekCalendarView;
 import com.kizitonwose.calendar.view.WeekDayBinder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class AnalyticalFragment extends Fragment {
 
     private WorkoutRecordViewModel workoutRecordViewModel;
@@ -114,7 +115,7 @@ public class AnalyticalFragment extends Fragment {
             /*
             The function that triggers when the date is changed.
              */
-            @RequiresApi(api = Build.VERSION_CODES.O)
+
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int y, int m, int d) {
                 String selectedDate = String.format("%d-%02d-%02d", y, m + 1, d);
 

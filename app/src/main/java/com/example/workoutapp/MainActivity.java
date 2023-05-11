@@ -1,8 +1,10 @@
 package com.example.workoutapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -14,6 +16,7 @@ import com.example.workoutapp.fragment.AnalyticalFragment;
 import com.example.workoutapp.fragment.CalendarFragment;
 import com.example.workoutapp.fragment.HomeFragment;
 import com.example.workoutapp.fragment.MapFragment;
+import com.example.workoutapp.fragment.ProfileFragment;
 import com.example.workoutapp.fragment.SearchFragment;
 import com.example.workoutapp.navigation.BottomNavigation;
 import com.example.workoutapp.navigation.NavigationDrawer;
@@ -39,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
@@ -145,77 +148,102 @@ public class MainActivity extends AppCompatActivity {
         }
         return "intermediate";
     }
+    private void setSelectedNavigationItem(int menuItemId) {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
+        // Remove the OnNavigationItemSelectedListener
+        bottomNavigationView.setOnNavigationItemSelectedListener(null);
+
+        switch (menuItemId) {
+            case R.id.home:
+            case R.id.nav_home:
+                bottomNavigationView.setSelectedItemId(R.id.home);
+                navigationView.setCheckedItem(R.id.nav_home);
+                break;
+            case R.id.analytical:
+            case R.id.nav_analytical:
+                bottomNavigationView.setSelectedItemId(R.id.analytical);
+                navigationView.setCheckedItem(R.id.nav_analytical);
+                break;
+            case R.id.search:
+            case R.id.nav_search:
+                bottomNavigationView.setSelectedItemId(R.id.search);
+                navigationView.setCheckedItem(R.id.nav_search);
+                break;
+            case R.id.calendar:
+            case R.id.nav_calendar:
+                bottomNavigationView.setSelectedItemId(R.id.calendar);
+                navigationView.setCheckedItem(R.id.nav_calendar);
+                break;
+            case R.id.map:
+            case R.id.nav_map:
+                bottomNavigationView.setSelectedItemId(R.id.map);
+                navigationView.setCheckedItem(R.id.nav_map);
+                break;
+            // Add more cases for other menu items if needed
+        }
+
+        // Set the OnNavigationItemSelectedListener back again
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+    }
+
+    private void navigateToFragment(int menuItemId) {
+        Fragment selectedFragment = null;
+
+        switch (menuItemId) {
+            case R.id.home:
+            case R.id.nav_home:
+                selectedFragment = new HomeFragment();
+                break;
+            case R.id.analytical:
+            case R.id.nav_analytical:
+                selectedFragment = new AnalyticalFragment();
+                break;
+            case R.id.search:
+            case R.id.nav_search:
+                selectedFragment = new SearchFragment();
+                break;
+            case R.id.calendar:
+            case R.id.nav_calendar:
+                selectedFragment = new CalendarFragment();
+                break;
+            case R.id.map:
+            case R.id.nav_map:
+                selectedFragment = new MapFragment();
+                break;
+            case R.id.nav_profile:
+                selectedFragment = new ProfileFragment();
+                break;
+            case R.id.nav_sign_out:
+                signOut();
+                break;
+            // Add more cases for other menu items if needed
+        }
+
+        if (selectedFragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit();
+
+            setSelectedNavigationItem(menuItemId);
+        }
+    }
     // Bottom navigation item selection listener
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
             menuItem -> {
-                Fragment selectedFragment = null;
-
-                switch (menuItem.getItemId()) {
-                    case R.id.home:
-                        selectedFragment = new HomeFragment();
-                        break;
-                    case R.id.analytical:
-                        selectedFragment = new AnalyticalFragment();
-                        break;
-                    case R.id.search:
-                        selectedFragment = new SearchFragment();
-                        break;
-                    case R.id.calendar:
-                        selectedFragment = new CalendarFragment();
-                        break;
-                    case R.id.map:
-                        selectedFragment = new MapFragment();
-                        break;
-                }
-
-                // Replace the current fragment with the selected one
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, selectedFragment)
-                        .commit();
-
+                navigateToFragment(menuItem.getItemId());
                 return true;
             };
 
     private final NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             menuItem -> {
-                // Handle navigation view item clicks here.
-                int id = menuItem.getItemId();
-
-                Fragment selectedFragment = null;
-
-                switch (id) {
-                    case R.id.nav_home:
-                        selectedFragment = new HomeFragment();
-                        break;
-                    case R.id.nav_analytical:
-                        selectedFragment = new AnalyticalFragment();
-                        break;
-                    case R.id.nav_search:
-                        selectedFragment = new SearchFragment();
-                        break;
-                    case R.id.nav_calendar:
-                        selectedFragment = new CalendarFragment();
-                        break;
-                    case R.id.nav_map:
-                        selectedFragment = new MapFragment();
-                        break;
-                    case R.id.nav_sign_out:
-                        signOut();
-                        break;
-                    // Add more cases for other menu items if needed
-                }
-
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, selectedFragment)
-                            .commit();
-                }
-
+                navigateToFragment(menuItem.getItemId());
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             };
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         // Redirect to the login activity or another appropriate activity after signing out

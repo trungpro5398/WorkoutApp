@@ -56,4 +56,7 @@
     <string name="please_enter_your_details">Please Enter Your Details</string>
     <string name="Choose_your_Goal"> Choose Your Goal</string>
     <string name="Choose_your_Gender"> Gender</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="this_email_is_for_notification_purpose_only_does_not_affect_login">*This email is for notification purpose only , does not affect login</string>
 </resources>
