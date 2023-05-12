@@ -1,17 +1,17 @@
-package com.example.workoutapp.model;
+package com.example.workoutapp.utils;
 
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.workoutapp.model.WorkoutType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Locale;
 
 public class WorkoutUtils {
 
@@ -33,6 +33,7 @@ public class WorkoutUtils {
 
 
     private HashMap<WorkoutType, Integer> workoutTypeCaloriesMap;
+    private static WorkoutUtils instance;
 
 
 
@@ -41,7 +42,6 @@ public class WorkoutUtils {
 
     }
 
-    private static WorkoutUtils instance;
     public static WorkoutUtils getWorkoutMapper(){
         if (instance == null) {
             return new WorkoutUtils();
@@ -61,10 +61,10 @@ public class WorkoutUtils {
         int minutes = 0;
         if (duration.contains("hr")) {
             minutes = Integer.valueOf(duration.replace("hr", ""));
-            return minutes = minutes * 60;
+            return minutes * 60;
         }
         else if (duration.contains("min")) {
-            return minutes = Integer.valueOf(duration.replace("min", ""));
+            return Integer.valueOf(duration.replace("min", ""));
         }
         Log.d("TAG", "convertToIntDuration: not converted successfully");
         return minutes;
@@ -90,11 +90,11 @@ public class WorkoutUtils {
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static Long parseDateToMs(String date, String formatPattern){
-        SimpleDateFormat formatter = new SimpleDateFormat(formatPattern);
+        SimpleDateFormat formatter = new SimpleDateFormat(formatPattern, Locale.US);
         try {
             Date parsedDate = formatter.parse(date);
             Long ms = parsedDate.getTime();
-            return ms;
+            return ms == null ? 0 : ms;
         } catch (ParseException e) {
             Log.d("TAG", "parseDateToMs: Failed to parse");
             return 0L;

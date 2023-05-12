@@ -1,4 +1,6 @@
-package com.example.workoutapp.model;
+package com.example.workoutapp.utils;
+
+import com.example.workoutapp.model.WorkoutType;
 
 import java.util.HashMap;
 
@@ -20,11 +22,10 @@ public class WorkoutCalorieCalculator {
 
     public static Integer getWorkoutTypeCaloriesRate(WorkoutType type) {
         return getWorkoutTypeCaloriesMap().get(type);
-    };
+    }
     public static Integer getWorkoutCalories(WorkoutType workoutType, Integer minutes){
-        Integer calories = 0;
         Integer rate = getWorkoutTypeCaloriesRate(workoutType);
-        calories = rate * minutes;
+        Integer calories = rate * minutes;
         return calories;
     }
 }

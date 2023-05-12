@@ -11,8 +11,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.workoutapp.entity.WorkoutRecord;
-import com.example.workoutapp.model.WorkoutCalorieCalculator;
-import com.example.workoutapp.model.WorkoutUtils;
+import com.example.workoutapp.utils.WorkoutCalorieCalculator;
+import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.model.WorkoutType;
 import com.example.workoutapp.repository.WorkoutRecordRepository;
 

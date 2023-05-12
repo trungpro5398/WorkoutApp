@@ -22,8 +22,5 @@ public interface WorkoutRecordDao {
     @Query("SELECT * FROM workout_record")
     LiveData<List<WorkoutRecord>> getAllWorkoutRecords();
 
-    @Query("SELECT workoutDuration, workoutType FROM workout_record WHERE workoutDate = :workoutDate")
-    LiveData<List<Workout_Record_Subinfo>> getAllWorkoutRecordsByDate(String workoutDate);
-
 }
 

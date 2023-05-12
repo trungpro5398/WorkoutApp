@@ -25,7 +25,7 @@ import com.example.workoutapp.adapter.HomeNewVideosAdapter;
 import com.example.workoutapp.adapter.WorkoutAdapter;
 import com.example.workoutapp.databinding.HomeFragmentBinding;
 import com.example.workoutapp.entity.WorkoutRecord;
-import com.example.workoutapp.model.NewVideo;
+import com.example.workoutapp.entity.NewVideo;
 import com.example.workoutapp.viewmodel.HomeViewModel;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
@@ -193,6 +193,22 @@ public class HomeFragment extends Fragment {
 //        layoutManager = new LinearLayoutManager(requireContext());
 //        binding.newWorkoutsVids.setLayoutManager(layoutManager);
 //        Log.d("TAG", "onViewCreated: "+binding+units.size());
+        adapter.setItemClickObserver(new Observer<NewVideo>() {
+            @Override
+            public void onChanged(NewVideo video) {
+                VideoFragment videoFragment = new VideoFragment();
+                Bundle videoArgs = new Bundle();
+                videoArgs.putString("videoId", video.getVideoId());
+                videoFragment.setArguments(videoArgs);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, videoFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
     }
 
 

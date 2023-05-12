@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.workoutapp.adapter.WorkoutRecordAdapter;
 import com.example.workoutapp.databinding.AnalyticalFragmentBinding;
 import com.example.workoutapp.entity.WorkoutRecord;
-import com.example.workoutapp.model.WorkoutUtils;
+import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -29,6 +29,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Locale;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class AnalyticalFragment extends Fragment {
@@ -137,7 +138,7 @@ public class AnalyticalFragment extends Fragment {
              */
 
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int y, int m, int d) {
-                String selectedDate = String.format("%d-%02d-%02d", y, m + 1, d);
+                String selectedDate = String.format(Locale.US,"%d-%02d-%02d", y, m + 1, d);
                 workoutRecordViewModel.setSelectedDate(selectedDate);
             }
 
