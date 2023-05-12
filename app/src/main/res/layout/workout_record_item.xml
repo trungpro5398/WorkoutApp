@@ -13,11 +13,18 @@
         android:padding="8dp">
 
         <TextView
-            android:id="@+id/workout_record_text"
+            android:id="@+id/rc_workout_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Workout Title"
             android:textAppearance="?attr/textAppearanceHeadline6" />
+
+        <TextView
+            android:id="@+id/rc_workout_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Workout Title"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
     </LinearLayout>
 

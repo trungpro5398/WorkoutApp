@@ -21,7 +21,11 @@ import com.example.workoutapp.databinding.AnalyticalFragmentBinding;
 import com.example.workoutapp.entity.WorkoutRecord;
 import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -50,6 +54,26 @@ public class AnalyticalFragment extends Fragment {
         entries.add(new PieEntry(30.8f, "Blue"));
     }
 
+    private void createBarChart(){
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0f, 30f));
+        entries.add(new BarEntry(1f, 80f));
+        entries.add(new BarEntry(2f, 60f));
+        entries.add(new BarEntry(3f, 50f));
+        // gap of 2f
+        entries.add(new BarEntry(5f, 70f));
+        entries.add(new BarEntry(6f, 60f));
+        BarDataSet set = new BarDataSet(entries, "BarDataSet");
+
+        BarData data = new BarData(set);
+        data.setBarWidth(0.9f); // set custom bar width
+        binding.barChart.setData(data);
+        binding.barChart.setFitBars(true); // make the x-axis fit exactly all bars
+        binding.barChart.invalidate(); // refresh
+
+        BarChart barChartP = new BarChart(getContext());
+
+    }
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
     Bundle savedInstanceState) {
         binding = AnalyticalFragmentBinding.inflate(inflater, container, false);
