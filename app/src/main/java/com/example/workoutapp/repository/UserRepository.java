@@ -34,7 +34,7 @@ public class UserRepository {
     }
 
     private void setupDbListener() {
-        usersDbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String dataName = dataSnapshot.child("name").getValue(String.class);
