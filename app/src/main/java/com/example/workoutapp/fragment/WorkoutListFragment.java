@@ -18,7 +18,7 @@ import com.example.workoutapp.viewmodel.WorkoutViewModel;
 
 public class WorkoutListFragment extends Fragment {
     private WorkoutViewModel workoutViewModel;
-    private WorkoutAdapter adapter;
+    private WorkoutAdapter workoutAdapter;
     private WorkoutListFragmentBinding binding;
 
     @Nullable
@@ -35,19 +35,18 @@ public class WorkoutListFragment extends Fragment {
         Bundle args = getArguments();
         String workoutType = args != null ? args.getString("workoutType") : "";
 
-        adapter = new WorkoutAdapter();
-        binding.workoutListRecyclerView.setAdapter(adapter);
+        workoutAdapter = new WorkoutAdapter();
+        binding.workoutListRecyclerView.setAdapter(workoutAdapter);
         binding.workoutListRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         workoutViewModel = new ViewModelProvider(requireActivity()).get(WorkoutViewModel.class);
         workoutViewModel.getWorkoutsByType(workoutType).observe(getViewLifecycleOwner(), workouts -> {
-            adapter.setWorkoutList(workouts);
+            workoutAdapter.setWorkoutList(workouts);
         });
 
-        adapter.setOnItemClickListener(workout -> {
+        workoutAdapter.setOnItemClickListener(workout -> {
             VideoFragment videoFragment = new VideoFragment();
             Bundle videoArgs = new Bundle();
-            System.out.println(workout.getLevel());
             videoArgs.putString("videoId", workout.getVideoId());
             videoFragment.setArguments(videoArgs);
 

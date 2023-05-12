@@ -20,7 +20,7 @@ import com.example.workoutapp.viewmodel.WorkoutViewModel;
 public class SearchFragment extends Fragment {
 
     private WorkoutViewModel workoutViewModel;
-    private WorkoutCategoryAdapter adapter;
+    private WorkoutCategoryAdapter workoutCategoryAdapter;
     private SearchFragmentBinding binding;
 
     @Nullable
@@ -34,15 +34,15 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new WorkoutCategoryAdapter();
-        binding.workoutRecyclerView.setAdapter(adapter);
+        workoutCategoryAdapter = new WorkoutCategoryAdapter();
+        binding.workoutRecyclerView.setAdapter(workoutCategoryAdapter);
         binding.workoutRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         workoutViewModel = new ViewModelProvider(requireActivity()).get(WorkoutViewModel.class);
         workoutViewModel.getDistinctWorkoutTypes().observe(getViewLifecycleOwner(), workoutTypes -> {
-            adapter.setWorkoutTypeList(workoutTypes);
+            workoutCategoryAdapter.setWorkoutTypeList(workoutTypes);
         });
-        adapter.setOnItemClickListener(workoutType -> {
+        workoutCategoryAdapter.setOnItemClickListener(workoutType -> {
             WorkoutListFragment fragment = new WorkoutListFragment();
             Bundle args = new Bundle();
             args.putString("workoutType", workoutType.getType());
@@ -62,7 +62,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
+                workoutCategoryAdapter.filter(newText);
                 return true;
             }
         });

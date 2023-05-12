@@ -43,6 +43,7 @@ public class AnalyticalFragment extends Fragment {
         binding.workoutRecordRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         workoutRecordViewModel = new ViewModelProvider(requireActivity()).get(WorkoutRecordViewModel.class);
         workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), workoutRecords -> {
+            System.out.print(workoutRecords);
             adapter.setWorkoutRecords(workoutRecords);
             }
         );
