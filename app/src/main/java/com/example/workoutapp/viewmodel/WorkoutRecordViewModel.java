@@ -10,11 +10,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutRecord;
 import com.example.workoutapp.utils.WorkoutCalorieCalculator;
 import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.model.WorkoutType;
 import com.example.workoutapp.repository.WorkoutRecordRepository;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -215,7 +218,8 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
             String date = getSelectedDate().getValue();
             workoutTypeDurations.forEach((key, value) -> {
                 if (value!=null && value > 0) {
-                    WorkoutRecord record = new WorkoutRecord(key.name(), Integer.toString(value), date);
+                    String workoutType = StringUtils.capitalize(key.name().toLowerCase());
+                    WorkoutRecord record = new WorkoutRecord(workoutType, Integer.toString(value), date);
                     list.add(record);
                 }
             });

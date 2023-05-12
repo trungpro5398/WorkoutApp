@@ -37,7 +37,7 @@ public class WorkoutRecordAdapter extends RecyclerView.Adapter<WorkoutRecordAdap
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
         WorkoutRecord record = workoutRecords.get(position);
         String workoutType = StringUtils.capitalize(record.getWorkoutType().toLowerCase());
-        holder.workoutTypeText.setText(workoutType + " " + record.getWorkoutDate());
+        holder.workoutTypeText.setText(workoutType);
         holder.durationText.setText(record.getWorkoutDuration() + ":00 mins");
     }
 
