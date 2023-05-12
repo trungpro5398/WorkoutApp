@@ -1,5 +1,10 @@
 package com.example.workoutapp.fragment;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +42,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SensorEventListener {
     private HomeFragmentBinding binding;
     public HomeFragment(){}
     @Override
@@ -100,8 +106,17 @@ public class HomeFragment extends Fragment {
             navigationView.setCheckedItem(R.id.nav_search);
 
         });
+        SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        Sensor tempSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
 
+        if (tempSensor != null) {
+            sensorManager.registerListener(this, tempSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else {
+            Toast.makeText(getActivity(), "No step sensor on this device", Toast.LENGTH_SHORT).show();
+        }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -154,7 +169,22 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            float temperature = event.values[0];
+            String stringTemp = Float.toString(temperature);
+            binding.tempText.setText(stringTemp);
+            if (temperature > 18) {
+                binding.tempAdvice.setText("It's a great day to go for a run outside!");
+            }
+            else if (temperature < 18) {
+                binding.tempAdvice.setText("It's brisk, a great day to work out at the gym");
+            }
+        }
+    }
     private void subscribeToWorkoutRecordViewModel() {
         workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
             @Override

@@ -158,17 +158,23 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/second_card_text1"
+                                android:id="@+id/tempText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="3000"
+                                android:text="0"
                                 android:textSize="30sp" />
 
                             <TextView
                                 android:id="@+id/second_card_text2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="steps"
+                                android:text="Temperature (Celcius)"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:id="@+id/tempAdvice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Great day to go for a run"
                                 android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
