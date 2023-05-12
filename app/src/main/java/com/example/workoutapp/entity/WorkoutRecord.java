@@ -1,5 +1,6 @@
 package com.example.workoutapp.entity;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -7,7 +8,8 @@ import androidx.room.PrimaryKey;
 public class WorkoutRecord {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
+    @ColumnInfo(name = "user_id")
+    private String userId;
     private String workoutType;
     private String workoutDuration;
     private String workoutDate;
@@ -18,7 +20,13 @@ public class WorkoutRecord {
         this.workoutDate = workoutDate;
     }
 
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
