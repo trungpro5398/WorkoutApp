@@ -70,6 +70,8 @@ public class HomeFragment extends Fragment {
         View view = binding.getRoot();
         ViewModelProvider viewModelProvider = new ViewModelProvider(this);
         homeViewModel = viewModelProvider.get(HomeViewModel.class);
+        subscribeToHomeViewModel();
+
         workoutViewModel = viewModelProvider.get(WorkoutViewModel.class);
         workoutAdapter = new WorkoutAdapter();
 
@@ -142,6 +144,15 @@ public class HomeFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void subscribeToHomeViewModel(){
+        homeViewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                binding.username.setText("HELLO " + s.toUpperCase());
+            }
+        });
     }
 
     private void subscribeToWorkoutRecordViewModel() {

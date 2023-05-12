@@ -56,14 +56,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        //Open Login and registration first before any other fragment, Can comment it out to test other fragements !
-//        auth = FirebaseAuth.getInstance();
-//
-//        user = auth.getCurrentUser();
-//        if (user == null){
-//            Intent intent = new Intent(getApplicationContext(), Login.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
 
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
         YouTubeApiService service = retrofit.create(YouTubeApiService.class);
 //        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
-//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
-        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "dummy");
+        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
+//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "dummy");
 
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override
