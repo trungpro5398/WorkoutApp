@@ -21,6 +21,7 @@ public class WorkoutRecordAdapter extends RecyclerView.Adapter <WorkoutRecordAda
 
     public void setWorkoutRecords(List<WorkoutRecord> recordList) {
         this.workoutRecords = recordList;
+        notifyDataSetChanged();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.workoutapp.fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.example.workoutapp.adapter.WorkoutAdapter;
 import com.example.workoutapp.databinding.HomeFragmentBinding;
 import com.example.workoutapp.entity.WorkoutRecord;
 import com.example.workoutapp.model.NewVideo;
+import com.example.workoutapp.viewmodel.HomeViewModel;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,6 +47,8 @@ public class HomeFragment extends Fragment {
     private WorkoutViewModel workoutViewModel;
 
     private WorkoutRecordViewModel workoutRecordViewModel;
+
+    private HomeViewModel homeViewModel;
     private WorkoutAdapter workoutAdapter;
     private RecyclerView recyclerView;
     private String userLevel = "beginner"; // Change this to "intermediate" or "advanced" based on the user's level
@@ -65,6 +69,7 @@ public class HomeFragment extends Fragment {
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         ViewModelProvider viewModelProvider = new ViewModelProvider(this);
+        homeViewModel = viewModelProvider.get(HomeViewModel.class);
         workoutViewModel = viewModelProvider.get(WorkoutViewModel.class);
         workoutAdapter = new WorkoutAdapter();
 
@@ -156,8 +161,12 @@ public class HomeFragment extends Fragment {
 
         workoutRecordViewModel.getTotalCalories().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(Integer integer) {
-                binding.caloriesValue.setText(Integer.toString(integer));
+            public void onChanged(Integer calories) {
+                Pair<String,String> text = homeViewModel.getCaloriesText(calories);
+                String value = text.first;
+                String unit = text.second;
+                binding.caloriesValue.setText(value);
+                binding.caloriesUnit.setText(unit);
             }
         });
 

@@ -11,11 +11,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <com.kizitonwose.calendar.view.WeekCalendarView
-                    android:id="@+id/weekCalendarView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cv_dayViewResource="@layout/calendar_day_layout" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -67,7 +62,11 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/tv_duration"
                         />
-
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_calories"
+                        />
                     <ProgressBar
                         android:id="@+id/progressBar"
                         style="@style/Widget.MaterialComponents.CircularProgressIndicator"

@@ -24,12 +24,12 @@ import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class WorkoutRecordViewModel extends AndroidViewModel {
-    private WorkoutRecordRepository wrRepository;
+    private final WorkoutRecordRepository wrRepository;
     private LiveData<List<WorkoutRecord>> allWorkoutRecords;
 
-    private static String FILTER_DATE_PATTERN = "yyyy-MM-dd";
-    private static String DISPLAY_DATE_PATTERN = "E dd MMM";
-    private MutableLiveData<String> selectedDate;
+    public final static String FILTER_DATE_PATTERN = "yyyy-MM-dd";
+    private final static String DISPLAY_DATE_PATTERN = "E dd MMM";
+    private MutableLiveData<String> selectedDate = new MutableLiveData<>(getTodayDate());
 
     private String todayDisplayDate = getTodayDate(DISPLAY_DATE_PATTERN);
     private LiveData<Integer> dailyDuration;
@@ -37,6 +37,8 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     private LiveData<Integer> totalCalories;
 
     private LiveData<List<WorkoutRecord>> todayWorkoutRecords;
+
+    private MutableLiveData<List<WorkoutRecord>> selectedWorkoutRecords;
     private String today;
 
     private HashMap<WorkoutType, Integer> workoutTypeDurations;
@@ -46,9 +48,11 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
         wrRepository = new WorkoutRecordRepository(application);
         allWorkoutRecords = wrRepository.getAllWorkoutRecords();
         today = getTodayDate();
+        setSelectedDate(today);
         todayWorkoutRecords = Transformations.map(allWorkoutRecords, records -> {
                     return getTodayWorkoutRecords(records);
                 });
+
         dailyDuration = Transformations.map(allWorkoutRecords, records -> {
             return getTodayWorkoutDuration(records);
         });
@@ -57,18 +61,49 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
         });
     }
 
-    private List<WorkoutRecord> getTodayWorkoutRecords(List<WorkoutRecord> records) {
-        List<WorkoutRecord> todayRecords = new ArrayList<>();
+    public LiveData<List<WorkoutRecord>> getSelectedWorkoutRecords() {
+        if (selectedWorkoutRecords == null) {
+            selectedWorkoutRecords = new MutableLiveData<>(new ArrayList<>());
+        }
+        return selectedWorkoutRecords;
+    }
+
+    public void updateSelectedWorkoutRecords(){
+        if (allWorkoutRecords.getValue()!= null && selectedDate.getValue() != null){
+            List<WorkoutRecord> selectedRecords = getWorkoutRecordsByDate(allWorkoutRecords.getValue(), selectedDate.getValue());
+            selectedWorkoutRecords.setValue(selectedRecords);
+        }
+    }
+    private List<WorkoutRecord> getWorkoutRecordsByDate(List<WorkoutRecord> records, String date) {
+        List<WorkoutRecord> selectedRecords = new ArrayList<>();
         if (records != null){
             for (WorkoutRecord record: records
             ) {
-                if (record.getWorkoutDate().equals(today) ) {
-                    todayRecords.add(record);
+                if (record.getWorkoutDate().equals(date) ) {
+                    selectedRecords.add(record);
                 }
             }
         }
-        return todayRecords;
+        return selectedRecords;
     }
+
+    public List<WorkoutRecord> getWorkoutRecordsByDate(String date) {
+        List<WorkoutRecord> selectedRecords = new ArrayList<>();
+        List<WorkoutRecord> allRecords = allWorkoutRecords.getValue();
+        if (allRecords != null){
+            for (WorkoutRecord record: allRecords
+            ) {
+                if (record.getWorkoutDate().equals(date) ) {
+                    selectedRecords.add(record);
+                }
+            }
+        }
+        return selectedRecords;
+    }
+    private List<WorkoutRecord> getTodayWorkoutRecords(List<WorkoutRecord> records) {
+        return getWorkoutRecordsByDate(records, today);
+    }
+
 
     private Integer calculateDurationByDate(String date, List<WorkoutRecord> records) {
         Integer totalDuration = 0;
@@ -77,17 +112,8 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
             ) {
                 if (record.getWorkoutDate().equals(date) ) {
                     String d = record.getWorkoutDuration();
-
-                    if (d.contains("hr")) {
-                        int nd = Integer.valueOf(d.replace("hr", ""));
-                        nd = nd * 60;
-                        totalDuration = totalDuration + nd;
-                    }
-                    else if (d.contains("min")) {
-                        int nd = Integer.valueOf(d.replace("min", ""));
-                        totalDuration = totalDuration + nd;
-                    }
-//                    totalDuration += Integer.parseInt(record.getWorkoutDuration());
+                    Integer durationMins = WorkoutUtils.convertToIntDuration(d);
+                    totalDuration += durationMins;
                 }
             }
         }
@@ -104,14 +130,12 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
 
     private static String getTodayDate(){
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(FILTER_DATE_PATTERN);
-        String todayDate = dateFormat.format(LocalDate.now());
-        return todayDate;
+        return dateFormat.format(LocalDate.now());
     }
 
     private static String getTodayDate(String pattern){
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(pattern);
-        String todayDate = dateFormat.format(LocalDate.now());
-        return todayDate;
+        return dateFormat.format(LocalDate.now());
     }
 
     public void insert(WorkoutRecord workoutRecord) {
@@ -124,6 +148,8 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     public void setSelectedDate(String date){
         selectedDate.setValue(date);
     }
+
+
 
     public String getTodayDateDisplay(){
         return todayDisplayDate;
@@ -142,6 +168,7 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
             Integer currentCal = caloriesTable.get(workoutType) == null ? 0 : caloriesTable.get(workoutType);
             Integer updatedCalories = currentCal + calories;
             caloriesTable.put(workoutType, updatedCalories);
+
             durationMap.put(workoutType, durationMins + durationMap.get(workoutType));
 
 
@@ -158,8 +185,43 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
         return totalCalories;
     }
 
+    public Integer getSelectedDayTotalCalories() {
+        if(selectedWorkoutRecords == null || selectedWorkoutRecords.getValue() == null) {
+            return 0;
+        }
+        return calculateTotalCalories(selectedWorkoutRecords.getValue());
+    }
+
     public LiveData<Integer> getTotalCalories() {
         return totalCalories;
     }
+
+    public MutableLiveData<String> getSelectedDate (){
+        return selectedDate;
+    }
+
+    public Integer getSelectedDayTotalDuration() {
+        if(selectedWorkoutRecords == null ) {
+            return 0;
+        }
+        List<WorkoutRecord> workoutRecords = selectedWorkoutRecords.getValue();
+        Integer duration = calculateDurationByDate(getSelectedDate().getValue(), workoutRecords);
+        return duration;
+    }
+
+    public List<WorkoutRecord> getAllWorkoutTypeDurations() {
+        List<WorkoutRecord> list = new ArrayList<>();
+        if(workoutTypeDurations != null) {
+            String date = getSelectedDate().getValue();
+            workoutTypeDurations.forEach((key, value) -> {
+                if (value!=null && value > 0) {
+                    WorkoutRecord record = new WorkoutRecord(key.name(), Integer.toString(value), date);
+                    list.add(record);
+                }
+            });
+        }
+        return list;
+    }
+
 
 }
