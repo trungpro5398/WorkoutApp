@@ -18,19 +18,20 @@ public class UserRepository {
 
     private static UserRepository instance;
 
-    private MutableLiveData<String> name = new MutableLiveData<>();
+    private MutableLiveData<String> name = new MutableLiveData<>("");
 
     private UserRepository() {
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        if (user != null){
-            // User is signed In
-            usersDbRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
-            setupDbListener();
-        } else {
-            // No User is signed in
+        if (mAuth != null) {
+            user = mAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed In
+                usersDbRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+                setupDbListener();
+            } else {
+                // No User is signed in
+            }
         }
-
     }
 
     private void setupDbListener() {

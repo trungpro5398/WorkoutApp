@@ -83,7 +83,8 @@ public class AnalyticalFragment extends Fragment {
         pieChart.setData(data);
         pieChart.invalidate();
 
-
+        createBarChart();
+        setupUIObservers();
         View view = binding.getRoot();
         adapter = new WorkoutRecordAdapter();
         binding.workoutRecordRecyclerView.setAdapter(adapter);
@@ -95,12 +96,13 @@ public class AnalyticalFragment extends Fragment {
         updateTotalCalories();
         updateTotalDuration();
         subscribeToWorkoutRecordViewModel();
-        /*
-        The calendarSelect method is the method that you'll be working on for everything i assume
-         */
         addCalendarSelectListener();
         return view;
 
+    }
+
+    private void setupUIObservers() {
+//        binding.
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -143,7 +145,6 @@ public class AnalyticalFragment extends Fragment {
             @Override
             public void onChanged(List<WorkoutRecord> workoutRecords) {
 //                adapter.setWorkoutRecords(workoutRecords);
-                // TODO: Differentiate between past and future
                 updateTotalCalories();
                 updateTotalDuration();
                 adapter.setWorkoutRecords(workoutRecordViewModel.getAllWorkoutTypeDurations());
