@@ -30,8 +30,8 @@ import com.example.workoutapp.R;
 import com.example.workoutapp.adapter.HomeNewVideosAdapter;
 import com.example.workoutapp.adapter.WorkoutAdapter;
 import com.example.workoutapp.databinding.HomeFragmentBinding;
+import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutRecord;
-import com.example.workoutapp.entity.NewVideo;
 import com.example.workoutapp.viewmodel.HomeViewModel;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
@@ -61,9 +61,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private AppCompatActivity mActivity;
 
     private RecyclerView recyclerView2;
-    private List<NewVideo> units;
+    private List<Workout> newVideos;
     private RecyclerView.LayoutManager layoutManager;
-    private HomeNewVideosAdapter adapter;
+//    private HomeNewVideosAdapter adapter;
+    private WorkoutAdapter newVidAdapter;
     private TextView durationTextView;
 
 
@@ -146,18 +147,33 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
             }
         });
-        fetchRandomWorkoutsByLevel(userLevel);
-        units = NewVideo.createNewVideoList();
-        adapter = new HomeNewVideosAdapter(units);
 
-//        recyclerView2 = view.findViewById(R.id.new_workouts_vids);
-        binding.newWorkoutsVids.setAdapter(adapter);
+
+
+        // New videos
+        workoutViewModel.getNewRandomWorkouts(userLevel, 10);
+        newVideos = workoutViewModel.getNewRandomWorkouts(userLevel, 10).getValue();
+        newVidAdapter = new WorkoutAdapter();
+        newVidAdapter.setWorkoutList(newVideos);
+        newVidAdapter.setOnItemClickListener((Workout video) -> {
+            VideoFragment videoFragment = new VideoFragment();
+            Bundle videoArgs = new Bundle();
+            videoArgs.putString("videoId", video.getVideoId());
+            videoFragment.setArguments(videoArgs);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, videoFragment)
+                    .addToBackStack(null)
+                    .commit();
+        } );
+
+        binding.newWorkoutsVids.setAdapter(newVidAdapter);
         layoutManager = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
         binding.newWorkoutsVids.setLayoutManager(layoutManager);
 
-        Log.d("TAG", "onViewCreated: "+binding+units.size());
 
-
+        fetchRandomWorkoutsByLevel(userLevel);
         return view;
     }
 
@@ -189,8 +205,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
             @Override
             public void onChanged(List<WorkoutRecord> workoutRecords) {
-//                Integer duration = workoutRecordViewModel.getDailyDuration().getValue();
-//                durationTextView.setText(Integer.toString(duration));
             }
         });
         workoutRecordViewModel.getDailyDuration().observe(getViewLifecycleOwner(), new Observer<Integer>() {
@@ -215,29 +229,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-//    units = NewVideoResult.createNewVideoList();
-//        adapter = new HomeNewVideosAdapter(units);
-//
-////        recyclerView2 = view.findViewById(R.id.new_workouts_vids);
-//        binding.newWorkoutsVids.setAdapter(adapter);
-//        layoutManager = new LinearLayoutManager(requireContext());
-//        binding.newWorkoutsVids.setLayoutManager(layoutManager);
-//        Log.d("TAG", "onViewCreated: "+binding+units.size());
-        adapter.setItemClickObserver(new Observer<NewVideo>() {
-            @Override
-            public void onChanged(NewVideo video) {
-                VideoFragment videoFragment = new VideoFragment();
-                Bundle videoArgs = new Bundle();
-                videoArgs.putString("videoId", video.getVideoId());
-                videoFragment.setArguments(videoArgs);
-
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, videoFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
 
     }
 
@@ -245,6 +236,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private void fetchRandomWorkoutsByLevel(String level) {
         workoutViewModel.getRandomWorkoutsByLevel(level, 10).observe(getViewLifecycleOwner(), workouts -> {
             workoutAdapter.setWorkoutList(workouts);
+        });
+
+        workoutViewModel.getNewRandomWorkouts(level, 10).observe(getViewLifecycleOwner(), workouts -> {
+            newVidAdapter.setWorkoutList(workouts);
         });
     }
 

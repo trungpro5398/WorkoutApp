@@ -24,6 +24,7 @@ import com.example.workoutapp.fragment.ProfileFragment;
 import com.example.workoutapp.fragment.SearchFragment;
 import com.example.workoutapp.navigation.BottomNavigation;
 import com.example.workoutapp.navigation.NavigationDrawer;
+import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import com.example.workoutapp.workmanager.UploadWorker;
@@ -111,31 +112,36 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
         Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
 
-//         fetchWorkouts();
+         fetchWorkouts();
     }
 
     private void fetchWorkouts() {
         List<String> workoutTypes = Arrays.asList("workout beginner, workout intermediate, workout advance");
         for (String workoutType : workoutTypes) {
-            fetchWorkoutVideosByType(workoutType);
+            // TODO: uncomment later
+//            fetchWorkoutVideosByType(workoutType, false);
+            fetchWorkoutVideosByType(workoutType, true);
         }
     }
 
-    // Fetching new workout videos on homepage
-    private void fetchNewWorkouts() {
-            fetchWorkoutVideosByType("new workout " );
-    }
-    private void fetchWorkoutVideosByType(String workoutType) {
+    private void fetchWorkoutVideosByType(String workoutType, Boolean newVideo) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.googleapis.com/youtube/v3/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         YouTubeApiService service = retrofit.create(YouTubeApiService.class);
-//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
-        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
-//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "dummy");
-
+        String query = workoutType;
+        Call<YouTubeResponse> call;
+        if (newVideo) {
+            query = "new " + workoutType;
+            call = service.getNewWorkoutVideos(query, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
+        }
+        else {
+            call = service.getWorkoutVideos(query, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
+            //        Call<YouTubeResponse> call = service.getWorkoutVideos(query, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
+//        Call<YouTubeResponse> call = service.getWorkoutVideos(query, "dummy");
+        }
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override
             public void onResponse(Call<YouTubeResponse> call, Response<YouTubeResponse> response) {
@@ -143,12 +149,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Workout> workouts = new ArrayList<>();
                     for (YouTubeResponse.Item item : response.body().getItems()) {
-
+                        String wType = newVideo ? WorkoutUtils.NEW_WORKOUT_TYPE : workoutType;
                         String title = item.snippet.title;
                         String videoId = item.id.videoId;
                         String thumbnailUrl = item.snippet.thumbnails.high.url; // Use high-quality thumbnail
                         String level = detectWorkoutLevel(title); // Detect workout level based on the title
-                        workouts.add(new Workout(title, videoId, workoutType, thumbnailUrl, level)); // Add level to Workout object
+                        workouts.add(new Workout(title, videoId, wType, thumbnailUrl, level)); // Add level to Workout object
                     }
                     workoutViewModel.insert(workouts);
                 }
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private String detectWorkoutLevel(String title) {
+    public static String detectWorkoutLevel(String title) {
         String lowerCaseTitle = title.toLowerCase();
         if (lowerCaseTitle.contains("beginner") || lowerCaseTitle.contains("basic") || lowerCaseTitle.contains("easy")) {
             return "beginner";

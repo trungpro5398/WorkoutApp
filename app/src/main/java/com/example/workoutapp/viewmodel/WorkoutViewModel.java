@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutType;
@@ -33,6 +34,7 @@ public class WorkoutViewModel extends AndroidViewModel {
     public LiveData<List<WorkoutType>> getDistinctWorkoutTypes() {
         return workoutRepository.getDistinctWorkoutTypes();
     }
+
     public LiveData<List<Workout>> getWorkoutsByType(String workoutType) {
         return workoutRepository.getWorkoutsByType(workoutType);
     }
@@ -40,6 +42,10 @@ public class WorkoutViewModel extends AndroidViewModel {
 
     public LiveData<List<Workout>> getRandomWorkoutsByLevel(String level, int limit) {
         return workoutRepository.getRandomWorkoutsByLevel(level, limit);
+    }
+
+    public LiveData<List<Workout>> getNewRandomWorkouts(String level, int limit) {
+        return workoutRepository.getNewRandomWorkoutsByLevel(level, limit);
     }
 
 }

@@ -9,6 +9,7 @@ import com.example.workoutapp.dao.WorkoutDao;
 import com.example.workoutapp.entity.database.WorkoutDatabase;
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutType;
+import com.example.workoutapp.utils.WorkoutUtils;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class WorkoutRepository {
     public LiveData<List<Workout>> getWorkoutsByType(String workoutType) {
         return workoutDao.getWorkoutsByType(workoutType);
     }
+
     public LiveData<List<Workout>> searchWorkouts(String query) {
         // Use your repository or DAO to search workouts in the database
         // based on the query
@@ -58,4 +60,7 @@ public class WorkoutRepository {
         return workoutDao.getRandomWorkoutsByLevel(level, limit);
     }
 
+    public LiveData<List<Workout>> getNewRandomWorkoutsByLevel(String level, int limit) {
+        return workoutDao.getRandomWorkoutsByLevelAndType(level, limit, WorkoutUtils.NEW_WORKOUT_TYPE);
+    }
 }

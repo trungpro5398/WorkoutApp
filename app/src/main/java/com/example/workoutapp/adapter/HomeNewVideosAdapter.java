@@ -12,24 +12,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
 import com.example.workoutapp.databinding.NewVideosRvLayoutBinding;
-import com.example.workoutapp.entity.NewVideo;
+import com.example.workoutapp.entity.Workout;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class HomeNewVideosAdapter extends RecyclerView.Adapter<HomeNewVideosAdapter.NewVideoViewHolder> {
-    private List<NewVideo> newVideoList;
-    public HomeNewVideosAdapter(List<NewVideo> newVideoList) {
+    private List<Workout> newVideoList;
+    public HomeNewVideosAdapter(List<Workout> newVideoList) {
         this.newVideoList = newVideoList;
     }
 
-    private Observer<NewVideo> itemClickObserver;
-    public void setNewVideoList(List<NewVideo> newVideoList) {
+    private Observer<Workout> itemClickObserver;
+    public void setNewVideoList(List<Workout> newVideoList) {
         this.newVideoList = newVideoList;
         notifyDataSetChanged();
     }
 
-    public void setItemClickObserver(Observer<NewVideo> observer){
+    public void setItemClickObserver(Observer<Workout> observer){
         this.itemClickObserver = observer;
     }
 
@@ -43,7 +43,7 @@ public class HomeNewVideosAdapter extends RecyclerView.Adapter<HomeNewVideosAdap
     @Override
     public void onBindViewHolder(@NonNull NewVideoViewHolder holder, int position) {
         //the position of the item in the adapter's dataset
-        final NewVideo newVideo = newVideoList.get(position);
+        final Workout newVideo = newVideoList.get(position);
         holder.title.setText(newVideo.getTitle());
         holder.url.setText(newVideo.getTitle());
 

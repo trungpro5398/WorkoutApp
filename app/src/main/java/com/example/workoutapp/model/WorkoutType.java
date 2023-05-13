@@ -6,4 +6,5 @@ public enum WorkoutType {
     CYCLING,
     WEIGHTS,
     CALISTHENICS
+
 }

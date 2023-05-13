@@ -16,10 +16,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Workout.class, WorkoutRecord.class}, version = 8)
+@Database(entities = {Workout.class, WorkoutRecord.class}, version = 9)
 public abstract class WorkoutDatabase extends RoomDatabase {
     public abstract WorkoutDao workoutDao();
     public abstract WorkoutRecordDao workoutRecordDao();
+
     private static volatile WorkoutDatabase INSTANCE;
     //we create an ExecutorService with a fixed thread pool so we can later run database operations asynchronously on a background thread.
     private static final int NUMBER_OF_THREADS = 4;

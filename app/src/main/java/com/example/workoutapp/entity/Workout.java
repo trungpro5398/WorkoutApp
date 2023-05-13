@@ -3,6 +3,11 @@ package com.example.workoutapp.entity;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.workoutapp.utils.WorkoutUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(tableName = "workout")
 public class Workout {
     private String imageUrl;
@@ -20,6 +25,7 @@ public class Workout {
         this.imageUrl = imageUrl;
         this.level = level;
     }
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -68,4 +74,11 @@ public class Workout {
     public void setLevel(String level) {
         this.level = level;
     }
+
+//    public static List<Workout> createDummyNewVideoList() {
+//        List<Workout> newVideosList = new ArrayList<>();
+//        newVideosList.add(new Workout("Workout Title 1", "jKTxe236-4U", null, "beginner"));
+//        newVideosList.add(new Workout("Workout Title 2", "jKTxe236-4U", null, "beginner"));
+//        return newVideosList;
+//    }
 }

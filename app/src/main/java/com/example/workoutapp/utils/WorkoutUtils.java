@@ -15,6 +15,7 @@ import java.util.Locale;
 
 public class WorkoutUtils {
 
+    public final static String NEW_WORKOUT_TYPE = "NEW";
     private HashMap<String, WorkoutType> workoutTypeMapper ;
 
     private  HashMap<String, WorkoutType> getWorkoutTypeEnumMapper() {

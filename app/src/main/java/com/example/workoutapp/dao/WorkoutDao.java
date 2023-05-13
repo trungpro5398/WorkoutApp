@@ -31,5 +31,8 @@ public interface WorkoutDao {
     @Query("SELECT * FROM workout WHERE level = :level ORDER BY RANDOM() LIMIT :limit")
     LiveData<List<Workout>> getRandomWorkoutsByLevel(String level, int limit);
 
+    @Query("SELECT * FROM workout  WHERE level = :level AND type = :workoutType ORDER BY RANDOM() LIMIT :limit")
+    LiveData<List<Workout>> getRandomWorkoutsByLevelAndType(String level, int limit, String workoutType);
+
 }
 
