@@ -118,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchWorkouts() {
         List<String> workoutTypes = Arrays.asList("workout beginner, workout intermediate, workout advance");
         for (String workoutType : workoutTypes) {
-            // TODO: uncomment later
-//            fetchWorkoutVideosByType(workoutType, false);
+            fetchWorkoutVideosByType(workoutType, false);
             fetchWorkoutVideosByType(workoutType, true);
         }
     }
