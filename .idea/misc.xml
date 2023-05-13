@@ -4,8 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.233" />
+        <entry key="app/src/main/res/layout/activity_collect_user_details.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/activity_register.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/activity_video.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/activity_workout_list.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/analytical_fragment.xml" value="0.29393115942028986" />
@@ -15,8 +17,10 @@
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.2265625" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/map_fragment.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/navigation.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/search_fragment.xml" value="0.46298342541436466" />
         <entry key="app/src/main/res/layout/video_fragment.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/video_view.xml" value="0.21822916666666667" />

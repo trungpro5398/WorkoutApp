@@ -84,35 +84,6 @@ public class MainActivity extends AppCompatActivity {
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
         workoutRecordViewModel = new ViewModelProvider(this).get(WorkoutRecordViewModel.class);
 
-//        // Get a reference to the workout_records in Firebase Database
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("workout_records");
-//        // Get current user ID
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        String uid = (user != null) ? user.getUid() : null;
-//        // Attach a ValueEventListener to read the data at our posts reference
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot recordSnapshot: dataSnapshot.getChildren()) {
-//                    Map<String, Object> recordMap = (Map<String, Object>) recordSnapshot.getValue();
-//                    String userId = (String) recordMap.get("userId");
-//                    String workoutType = (String) recordMap.get("workoutType");
-//                    String workoutDuration = (String) recordMap.get("workoutDuration");
-//                    String workoutDate = (String) recordMap.get("workoutDate");
-//                    if( userId == uid){
-//                        WorkoutRecord workoutRecord = new WorkoutRecord(workoutType,workoutDuration, workoutDate);
-//                        workoutRecordViewModel.insert(workoutRecord);
-//                    }
-//
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,20 +103,12 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
         // Create a PeriodicWorkRequest for every 24 hours
-//        PeriodicWorkRequest uploadWorkRequest =
-//                new PeriodicWorkRequest.Builder(UploadWorker.class, 24, TimeUnit.HOURS)
-//                        .build();
-//        WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
+        PeriodicWorkRequest uploadWorkRequest =
+                new PeriodicWorkRequest.Builder(UploadWorker.class, 24, TimeUnit.HOURS)
+                        .build();
+        WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
         Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
-//        Button startUploadWorkerButton = findViewById(R.id.startUploadWorkerButton);
-//        startUploadWorkerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                WorkManager.getInstance(MainActivity.this).enqueue(new OneTimeWorkRequest.Builder(UploadWorker.class).build());
-//                Log.d("BackUpRoomDirectly", "" + new Date().getTime());
-//
-//            }
-//        });
+
 //         fetchWorkouts();
     }
 

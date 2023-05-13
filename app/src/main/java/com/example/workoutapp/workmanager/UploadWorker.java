@@ -16,8 +16,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class UploadWorker extends Worker {
     private WorkoutRecordDao workoutRecordDao;
@@ -32,7 +34,6 @@ public class UploadWorker extends Worker {
     @Override
     public Result doWork() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
 
         // Get the WorkoutRecord data here
         List<WorkoutRecord> workoutRecords = workoutRecordDao.getAllWorkoutRecordsSync();
@@ -50,8 +51,9 @@ public class UploadWorker extends Worker {
 
             databaseReference.child("workout_records").push().setValue(workoutRecord);
         }
-
-        Log.d("UploadWorker", "doWork method called at " + new Date().getTime());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+        String formattedDate = dateFormat.format(new Date());
+        Log.d("UploadWorker", "doWork method called at " + formattedDate);
 
         return Result.success();
     }

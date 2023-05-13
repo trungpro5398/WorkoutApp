@@ -1,12 +1,12 @@
 package com.example.workoutapp.fragment;
 
-import static android.content.ContentValues.TAG;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.workoutapp.MainActivity;
 import com.example.workoutapp.R;
+import com.example.workoutapp.workmanager.UploadWorker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +46,7 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.profile_fragment, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -87,7 +93,18 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getContext(), "User data updated", Toast.LENGTH_SHORT).show();
             }
         });
+        Button startUploadWorkerButton = view.findViewById(R.id.startUploadWorkerButton);
+        startUploadWorkerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+                String formattedDate = dateFormat.format(new Date());
 
+                Log.d("BackUpRoomDirectly", "Back up process called at " +formattedDate);
+                WorkManager.getInstance(getContext()).enqueue(new OneTimeWorkRequest.Builder(UploadWorker.class).build());
+
+            }
+        });
         return view;
     }
 
