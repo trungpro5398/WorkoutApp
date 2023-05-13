@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -274,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+
         // Redirect to the login activity or another appropriate activity after signing out
         Intent intent = new Intent(getApplicationContext(), Login.class);
         startActivity(intent);

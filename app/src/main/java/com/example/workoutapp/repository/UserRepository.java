@@ -21,7 +21,27 @@ public class UserRepository {
     private MutableLiveData<String> name = new MutableLiveData<>("");
 
     private UserRepository() {
+
         mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                mAuth = firebaseAuth;
+                if (mAuth != null) {
+                    user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        // User is signed In
+                        usersDbRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+                        setupDbListener();
+                        // Clear DB
+                    } else {
+                        // No User is signed in
+                    }
+                }
+
+
+            }
+        });
         if (mAuth != null) {
             user = mAuth.getCurrentUser();
             if (user != null) {
