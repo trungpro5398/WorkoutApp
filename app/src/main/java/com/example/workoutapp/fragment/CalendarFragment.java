@@ -26,6 +26,7 @@ import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 
 import java.lang.reflect.Array;
+import java.util.Date;
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -45,7 +46,7 @@ public class CalendarFragment extends Fragment {
         View view = binding.getRoot();
 
         workoutRecordViewModel = new ViewModelProvider(requireActivity()).get(WorkoutRecordViewModel.class);
-
+        binding.calendar.setMaxDate((new Date()).getTime());
         typeSpinner();
         durationSpinner();
         calendarSelect();
