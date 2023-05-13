@@ -39,7 +39,7 @@ public class UserRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String dataName = dataSnapshot.child("name").getValue(String.class);
-                if (!dataName.equals(name.getValue())){
+                if (dataName != null && !dataName.equals(name.getValue())){
                     name.setValue(dataName);
                 }
             }

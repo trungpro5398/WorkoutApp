@@ -9,15 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.workoutapp.R;
 import com.example.workoutapp.adapter.WorkoutRecordAdapter;
 import com.example.workoutapp.databinding.AnalyticalFragmentBinding;
 import com.example.workoutapp.entity.WorkoutRecord;
@@ -46,6 +50,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -61,8 +66,6 @@ public class AnalyticalFragment extends Fragment {
 
     private String CALORIES_GOAL = "1000";
     private String dailyDurationGoal = "20";
-
-    private String chartType = "";
 
     public AnalyticalFragment() {
 
@@ -85,6 +88,13 @@ public class AnalyticalFragment extends Fragment {
             }
         }
         else{
+            binding.barChart.setData(null);
+            binding.barChart.notifyDataSetChanged();
+            binding.barChart.invalidate();
+            binding.chart.setData(null);
+            binding.chart.notifyDataSetChanged();
+            binding.chart.invalidate();
+
             Log.d("TAG", "updateCharts: no data to chart");
         }
     }
@@ -99,27 +109,40 @@ public class AnalyticalFragment extends Fragment {
                 workoutTypes.add(i, record.getWorkoutType());
             }
             ;
-            HashMap<Float, String> xAxisLabelMap = getXAxisLabelMap(workoutTypes);
+//            HashMap<Float, String> xAxisLabelMap = getXAxisLabelMap(workoutTypes);
 
-//        String label = String.format("Time %s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
+
             try {
 
-
-                BarDataSet set = new BarDataSet(entries, "BarDataSet");
-                set.setValueTextSize(12f);
+                String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
+                BarDataSet set = new BarDataSet(entries, label);
+                set.setColors();
+                set.setValueTextSize(15f);
                 set.setValueTextColor(Color.WHITE);
+                set.setColors( getColor(R.color.orange));
+
+
                 BarData data = new BarData(set);
-                data.setBarWidth(1f); // set custom bar width
+                data.setBarWidth(0.5f); // set custom bar width
+                data.setValueTextColor(getColor(R.color.white));
+
                 BarChart barChart = binding.barChart;
                 barChart.setData(data);
-
+                barChart.notifyDataSetChanged();
                 barChart.setFitBars(true); // make the x-axis fit exactly all bars
+
                 Legend legend = barChart.getLegend();
                 legend.setEntries(new ArrayList<>());
-                new LegendEntry();
+                legend.setTextColor(getColor(R.color.white));
+                legend.setTextSize(15f);
+                legend.setWordWrapEnabled(true);
+
                 YAxis yAxis = barChart.getAxisLeft();
                 yAxis.setTextSize(15f);
                 yAxis.setTextColor(Color.WHITE);
+                yAxis.setGranularity(10f);
+                yAxis.setAxisMinimum(0f);
+                barChart.setAutoScaleMinMaxEnabled(true);
 
                 XAxis xaxis = barChart.getXAxis();
                 xaxis.setTextColor(Color.WHITE);
@@ -129,6 +152,13 @@ public class AnalyticalFragment extends Fragment {
                 xaxis.setGranularity(1f);
                 xaxis.setAxisMaximum(workoutTypes.size());
                 xaxis.setValueFormatter(new IndexAxisValueFormatter(workoutTypes));
+                xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xaxis.setLabelRotationAngle(45f);
+                xaxis.setLabelCount(workoutTypes.size());
+                barChart.setHorizontalScrollBarEnabled(true);
+
+
+
 //            xaxis.setValueFormatter(new ValueFormatter() {
 //                @Override
 //                public String getFormattedValue(float value) {
@@ -147,37 +177,57 @@ public class AnalyticalFragment extends Fragment {
 //
 //            };
 //
-//        };
-
-
-                XAxis xAxis = barChart.getXAxis();
-                xAxis.setLabelCount(workoutTypes.size());
+//
 
 
                 barChart.invalidate(); // refresh
 
 //        BarChart barChartP = new BarChart(getContext());}
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 Log.d("TAG", "createBarChart: Not good");
+                binding.barChart.setData(null);
+                binding.barChart.notifyDataSetChanged();
+                binding.barChart.invalidate();
             }
 
 
     }
 
+    @ColorInt
+    private int getColor(@ColorRes int id) {
+       return ContextCompat.getColor(getContext(), id);
+    }
     private void createPieChart(List<WorkoutRecord> workoutRecords ) {
         List<PieEntry> entries = new ArrayList<>();
         workoutRecords.forEach(record -> {
                 entries.add(new PieEntry(Float.parseFloat(record.getWorkoutDuration()), record.getWorkoutType()));
             });
-            String label = String.format("Time %s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
+            String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
             PieDataSet set = new PieDataSet(entries, label);
+            set.setValueTextSize(15f);
+            set.setValueTextColor(getColor(R.color.white));
+
+            set.setColors(getColor(R.color.purple_700), getColor(R.color.teal_700), getColor(R.color.orange), Color.BLUE, getColor(R.color.purple_500));
+
             PieData data = new PieData(set);
+            data.setValueTextColor(getColor(R.color.white));
+            data.setValueTextSize(15f);
+
             PieChart pieChart = binding.chart;
+            pieChart.setCenterText(label);
+            pieChart.setCenterTextColor(getColor(R.color.black));
+            pieChart.setCenterTextSize(15f);
+            pieChart.setEntryLabelTextSize(15f);
+
+            Legend legend = pieChart.getLegend();
+            legend.setTextColor(getColor(R.color.white));
+            legend.setTextSize(20f);
+            legend.setWordWrapEnabled(true);
+
             pieChart.setData(data);
+            pieChart.notifyDataSetChanged();
 
             pieChart.invalidate();
-
-//            pieChart.getLegend()
 
     }
 
@@ -185,16 +235,26 @@ public class AnalyticalFragment extends Fragment {
     Bundle savedInstanceState) {
         binding = AnalyticalFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        // Set up record list for recycler view adapter
         adapter = new WorkoutRecordAdapter();
         binding.workoutRecordRecyclerView.setAdapter(adapter);
         binding.workoutRecordRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        // Set up view model
         workoutRecordViewModel = new ViewModelProvider(requireActivity()).get(WorkoutRecordViewModel.class);
         subscribeToWorkoutRecordViewModel();
+
+       // Set up calendar listener and ui
         addCalendarSelectListener();
-
         binding.calendarView.setDate(WorkoutUtils.parseDateToMs(workoutRecordViewModel.getSelectedDate().getValue(), "yyyy-MM-dd"));
-        addTabListener();
 
+        // Add tab listener and initial setup
+        addTabListener();
+        TabLayout chartTabSelector = binding.chartTabSelector;
+        tabListener.onTabSelected(chartTabSelector.getTabAt(chartTabSelector.getSelectedTabPosition()));
+
+        // Initial Setup of other UI components
         updateCharts();
         updateTotalCalories();
         updateTotalDuration();
@@ -216,7 +276,6 @@ public class AnalyticalFragment extends Fragment {
                         binding.barChart.setVisibility(View.VISIBLE);
                         break;
                     default:
-                        chartType = "Pie Chart";
                         binding.chart.setVisibility(View.VISIBLE);
                         binding.barChart.setVisibility(View.GONE);
                 }
@@ -258,8 +317,7 @@ public class AnalyticalFragment extends Fragment {
     }
 
     private void updateTotalDuration() {
-        Integer duration = workoutRecordViewModel.getSelectedDayTotalDuration();
-        binding.tvDuration.setText(duration + "/" + dailyDurationGoal + " min");
+        binding.tvDuration.setText( "Total workout duration: " + workoutRecordViewModel.getSelectedDayTotalDuration() + "/" + dailyDurationGoal + " min");
     }
 
     public void subscribeToWorkoutRecordViewModel() {
@@ -279,7 +337,6 @@ public class AnalyticalFragment extends Fragment {
         workoutRecordViewModel.getSelectedWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
             @Override
             public void onChanged(List<WorkoutRecord> workoutRecords) {
-//                adapter.setWorkoutRecords(workoutRecords);
                 updateTotalCalories();
                 updateTotalDuration();
                 adapter.setWorkoutRecords(workoutRecordViewModel.getAllWorkoutTypeDurations());
