@@ -51,6 +51,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -247,6 +248,7 @@ public class AnalyticalFragment extends Fragment {
 
        // Set up calendar listener and ui
         addCalendarSelectListener();
+        binding.calendarView.setMaxDate((new Date()).getTime());
         binding.calendarView.setDate(WorkoutUtils.parseDateToMs(workoutRecordViewModel.getSelectedDate().getValue(), "yyyy-MM-dd"));
 
         // Add tab listener and initial setup
@@ -312,12 +314,13 @@ public class AnalyticalFragment extends Fragment {
     }
 
     private void updateTotalCalories() {
-        String calText = workoutRecordViewModel.getSelectedDayTotalCalories() + "/" + CALORIES_GOAL + "cal";
+        String calText = workoutRecordViewModel.getSelectedDayTotalCalories() + "/" + CALORIES_GOAL + " cal";
         binding.tvCalories.setText(calText);
     }
 
     private void updateTotalDuration() {
-        binding.tvDuration.setText( "Total workout duration: " + workoutRecordViewModel.getSelectedDayTotalDuration() + "/" + dailyDurationGoal + " min");
+        String text = "Total workout duration: " + workoutRecordViewModel.getSelectedDayTotalDuration() + "/" + dailyDurationGoal + " min";
+        binding.durationTextView.setText(text);
     }
 
     public void subscribeToWorkoutRecordViewModel() {

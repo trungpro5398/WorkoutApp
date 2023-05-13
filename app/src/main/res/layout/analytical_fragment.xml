@@ -31,36 +31,39 @@
                     tools:layout_editor_absoluteX="7dp"
                     tools:layout_editor_absoluteY="10dp" />
 
-                <LinearLayout
-                    android:id="@+id/textView"
+                <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:text="Great job, you're almost there!"
+                    tools:layout_editor_absoluteX="13dp"
+                    tools:layout_editor_absoluteY="219dp"
                     app:layout_constraintStart_toStartOf="@+id/calendarView"
-                    app:layout_constraintTop_toBottomOf="@+id/calendarView">
+                    app:layout_constraintTop_toBottomOf="@+id/calendarView"
+                    android:id="@+id/encouragement"/>
+
+                <TextView
+                    android:id="@+id/duration_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="@+id/encouragement"
+                    app:layout_constraintTop_toBottomOf="@+id/encouragement"/>
 
 
-                    <TextView
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Great job, you're almost there!"
-                        tools:layout_editor_absoluteX="13dp"
-                        tools:layout_editor_absoluteY="219dp" />
 
-                    <TextView
-                        android:id="@+id/tv_duration"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Total workout duration:" />
+
 
                     <LinearLayout
+                        android:id="@+id/calories_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="@+id/duration_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/duration_text_view">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -73,7 +76,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/charts_section"
@@ -81,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@id/textView">
+                    app:layout_constraintTop_toBottomOf="@id/calories_layout">
 
                     <com.google.android.material.tabs.TabLayout
                         android:id="@+id/chart_tab_selector"
