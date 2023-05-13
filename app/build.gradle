@@ -50,6 +50,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.3'
     implementation 'com.google.firebase:firebase-database:20.2.1'
 
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
     def lifecycle_version = "2.5.1"
     def arch_version = "2.2.0"
 
@@ -99,4 +105,15 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // Recycler view
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+
+    // Pie chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Calendar
+    implementation 'com.kizitonwose.calendar:view:2.3.0'
+
+
 }

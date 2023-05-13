@@ -1,48 +1,90 @@
 package com.example.workoutapp.fragment;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
+import com.example.workoutapp.adapter.HomeNewVideosAdapter;
 import com.example.workoutapp.adapter.WorkoutAdapter;
-import com.example.workoutapp.entity.Workout;
+import com.example.workoutapp.databinding.HomeFragmentBinding;
+import com.example.workoutapp.entity.WorkoutRecord;
+import com.example.workoutapp.entity.NewVideo;
+import com.example.workoutapp.viewmodel.HomeViewModel;
+import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class HomeFragment extends Fragment {
+@RequiresApi(api = Build.VERSION_CODES.O)
+public class HomeFragment extends Fragment implements SensorEventListener {
+    private HomeFragmentBinding binding;
+    public HomeFragment(){}
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
     private WorkoutViewModel workoutViewModel;
+
+    private WorkoutRecordViewModel workoutRecordViewModel;
+
+    private HomeViewModel homeViewModel;
     private WorkoutAdapter workoutAdapter;
     private RecyclerView recyclerView;
     private String userLevel = "beginner"; // Change this to "intermediate" or "advanced" based on the user's level
     private AppCompatActivity mActivity;
+
+    private RecyclerView recyclerView2;
+    private List<NewVideo> units;
+    private RecyclerView.LayoutManager layoutManager;
+    private HomeNewVideosAdapter adapter;
+    private TextView durationTextView;
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment, container, false);
 
-        workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
+        binding = HomeFragmentBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this);
+        homeViewModel = viewModelProvider.get(HomeViewModel.class);
+        subscribeToHomeViewModel();
+
+        workoutViewModel = viewModelProvider.get(WorkoutViewModel.class);
         workoutAdapter = new WorkoutAdapter();
 
+        durationTextView = binding.activeTimeValue;
+        workoutRecordViewModel = viewModelProvider.get(WorkoutRecordViewModel.class);
+        subscribeToWorkoutRecordViewModel();
+        binding.todayDate.setText(workoutRecordViewModel.getTodayDateDisplay());
         recyclerView = view.findViewById(R.id.recommended_vids);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -64,8 +106,17 @@ public class HomeFragment extends Fragment {
             navigationView.setCheckedItem(R.id.nav_search);
 
         });
+        SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        Sensor tempSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
 
+        if (tempSensor != null) {
+            sensorManager.registerListener(this, tempSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else {
+            Toast.makeText(getActivity(), "No step sensor on this device", Toast.LENGTH_SHORT).show();
+        }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -96,11 +147,99 @@ public class HomeFragment extends Fragment {
             }
         });
         fetchRandomWorkoutsByLevel(userLevel);
+        units = NewVideo.createNewVideoList();
+        adapter = new HomeNewVideosAdapter(units);
+
+//        recyclerView2 = view.findViewById(R.id.new_workouts_vids);
+        binding.newWorkoutsVids.setAdapter(adapter);
+        layoutManager = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
+        binding.newWorkoutsVids.setLayoutManager(layoutManager);
+
+        Log.d("TAG", "onViewCreated: "+binding+units.size());
 
 
         return view;
     }
 
+    private void subscribeToHomeViewModel(){
+        homeViewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                binding.username.setText("HELLO " + s.toUpperCase());
+            }
+        });
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            float temperature = event.values[0];
+            String stringTemp = Float.toString(temperature);
+            binding.tempText.setText(stringTemp);
+            if (temperature > 18) {
+                binding.tempAdvice.setText("It's a great day to go for a run outside!");
+            }
+            else if (temperature < 18) {
+                binding.tempAdvice.setText("It's brisk, a great day to work out at the gym");
+            }
+        }
+    }
+    private void subscribeToWorkoutRecordViewModel() {
+        workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
+            @Override
+            public void onChanged(List<WorkoutRecord> workoutRecords) {
+//                Integer duration = workoutRecordViewModel.getDailyDuration().getValue();
+//                durationTextView.setText(Integer.toString(duration));
+            }
+        });
+        workoutRecordViewModel.getDailyDuration().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                durationTextView.setText(Integer.toString(integer));
+            }
+        });
+
+        workoutRecordViewModel.getTotalCalories().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer calories) {
+                Pair<String,String> text = homeViewModel.getCaloriesText(calories);
+                String value = text.first;
+                String unit = text.second;
+                binding.caloriesValue.setText(value);
+                binding.caloriesUnit.setText(unit);
+            }
+        });
+
+    }
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+//    units = NewVideoResult.createNewVideoList();
+//        adapter = new HomeNewVideosAdapter(units);
+//
+////        recyclerView2 = view.findViewById(R.id.new_workouts_vids);
+//        binding.newWorkoutsVids.setAdapter(adapter);
+//        layoutManager = new LinearLayoutManager(requireContext());
+//        binding.newWorkoutsVids.setLayoutManager(layoutManager);
+//        Log.d("TAG", "onViewCreated: "+binding+units.size());
+        adapter.setItemClickObserver(new Observer<NewVideo>() {
+            @Override
+            public void onChanged(NewVideo video) {
+                VideoFragment videoFragment = new VideoFragment();
+                Bundle videoArgs = new Bundle();
+                videoArgs.putString("videoId", video.getVideoId());
+                videoFragment.setArguments(videoArgs);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, videoFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+    }
 
 
     private void fetchRandomWorkoutsByLevel(String level) {

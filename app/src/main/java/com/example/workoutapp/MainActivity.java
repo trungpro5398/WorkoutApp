@@ -1,8 +1,10 @@
 package com.example.workoutapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -57,7 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
@@ -70,15 +72,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Open Login and registration first before any other fragment, Can comment it out to test other fragements !
-        auth = FirebaseAuth.getInstance();
-
-        user = auth.getCurrentUser();
-        if (user == null){
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            startActivity(intent);
-            finish();
-        }
+//        //Open Login and registration first before any other fragment, Can comment it out to test other fragements !
+//        auth = FirebaseAuth.getInstance();
+//
+//        user = auth.getCurrentUser();
+//        if (user == null){
+//            Intent intent = new Intent(getApplicationContext(), Login.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
@@ -119,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Fetching new workout videos on homepage
+    private void fetchNewWorkouts() {
+            fetchWorkoutVideosByType("new workout " );
+    }
     private void fetchWorkoutVideosByType(String workoutType) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.googleapis.com/youtube/v3/")
@@ -128,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         YouTubeApiService service = retrofit.create(YouTubeApiService.class);
 //        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
         Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
-
+//        Call<YouTubeResponse> call = service.getWorkoutVideos(workoutType, "dummy");
 
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override

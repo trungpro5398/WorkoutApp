@@ -1,5 +1,6 @@
 package com.example.workoutapp.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,8 +11,12 @@ public class WorkoutRecord {
     private int id;
     @ColumnInfo(name = "user_id")
     private String userId;
+    @NonNull
     private String workoutType;
+    @NonNull
     private String workoutDuration;
+
+    @NonNull
     private String workoutDate;
 
     public WorkoutRecord(String workoutType, String workoutDuration, String workoutDate) {

@@ -9,18 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
-import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutRecord;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutRecordAdapter extends RecyclerView.Adapter <WorkoutRecordAdapter.RecordViewHolder> {
+public class WorkoutRecordAdapter extends RecyclerView.Adapter<WorkoutRecordAdapter.RecordViewHolder> {
     private List<WorkoutRecord> workoutRecords = new ArrayList<>();
 
 
     public void setWorkoutRecords(List<WorkoutRecord> recordList) {
         this.workoutRecords = recordList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -34,20 +36,25 @@ public class WorkoutRecordAdapter extends RecyclerView.Adapter <WorkoutRecordAda
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder holder, int position) {
         WorkoutRecord record = workoutRecords.get(position);
-        holder.text.setText(record.getWorkoutType() + record.getWorkoutDuration() + record.getWorkoutDate());
-
+        String workoutType = StringUtils.capitalize(record.getWorkoutType().toLowerCase());
+        holder.workoutTypeText.setText(workoutType);
+        holder.durationText.setText(record.getWorkoutDuration() + ":00 mins");
     }
+
     @Override
     public int getItemCount() {
-        if (workoutRecords==null) return 0;
-        return workoutRecords.size();}
+        if (workoutRecords == null) return 0;
+        return workoutRecords.size();
+    }
 
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
-        TextView text;
+        TextView workoutTypeText;
+        TextView durationText;
 
         RecordViewHolder(@NonNull View itemView) {
-        super(itemView);
-        text = itemView.findViewById(R.id.workout_record_text);
+            super(itemView);
+            workoutTypeText = itemView.findViewById(R.id.rc_workout_type);
+            durationText = itemView.findViewById(R.id.rc_workout_duration);
         }
     }
 
