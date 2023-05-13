@@ -37,11 +37,6 @@ public class WorkoutViewModel extends AndroidViewModel {
         return workoutRepository.getWorkoutsByType(workoutType);
     }
 
-    public LiveData<List<Workout>> searchWorkouts(String query) {
-        // Use your repository or DAO to search workouts in the database
-        // based on the query
-        return workoutRepository.searchWorkouts(query);
-    }
 
     public LiveData<List<Workout>> getRandomWorkoutsByLevel(String level, int limit) {
         return workoutRepository.getRandomWorkoutsByLevel(level, limit);

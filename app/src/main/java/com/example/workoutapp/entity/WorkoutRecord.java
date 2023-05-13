@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey;
 public class WorkoutRecord {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
+    @ColumnInfo(name = "user_id")
+    private String userId;
     @NonNull
     private String workoutType;
     @NonNull
@@ -24,7 +25,13 @@ public class WorkoutRecord {
         this.workoutDate = workoutDate;
     }
 
+    public String getUserId() {
+        return userId;
+    }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }

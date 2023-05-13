@@ -11,7 +11,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import com.example.workoutapp.entity.WorkoutRecord;
 import com.example.workoutapp.fragment.AnalyticalFragment;
 import com.example.workoutapp.fragment.CalendarFragment;
 import com.example.workoutapp.fragment.HomeFragment;
@@ -20,9 +24,14 @@ import com.example.workoutapp.fragment.ProfileFragment;
 import com.example.workoutapp.fragment.SearchFragment;
 import com.example.workoutapp.navigation.BottomNavigation;
 import com.example.workoutapp.navigation.NavigationDrawer;
+import com.example.workoutapp.viewmodel.WorkoutRecordViewModel;
 import com.example.workoutapp.viewmodel.WorkoutViewModel;
+import com.example.workoutapp.workmanager.UploadWorker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.workoutapp.entity.Workout;
@@ -31,11 +40,19 @@ import com.example.workoutapp.retrofit.YouTubeResponse;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
 
     private WorkoutViewModel workoutViewModel;
-
+    private WorkoutRecordViewModel workoutRecordViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
+        workoutRecordViewModel = new ViewModelProvider(this).get(WorkoutRecordViewModel.class);
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,12 +104,17 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
         }
+        // Create a PeriodicWorkRequest for every 24 hours
+        PeriodicWorkRequest uploadWorkRequest =
+                new PeriodicWorkRequest.Builder(UploadWorker.class, 24, TimeUnit.HOURS)
+                        .build();
+        WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
+        Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
 
 //         fetchWorkouts();
     }
 
     private void fetchWorkouts() {
-        //List<String> workoutTypes = Arrays.asList("swim workout", "badminton workout", "yoga workout", "running workout", "cycling workout", "strength training workout", "pilates workout", "dancing workout", "hiking workout", "boxing workout", "kickboxing workout", "MMA workout", "tennis workout", "basketball workout", "football workout", "soccer workout", "volleyball workout");
         List<String> workoutTypes = Arrays.asList("workout beginner, workout intermediate, workout advance");
         for (String workoutType : workoutTypes) {
             fetchWorkoutVideosByType(workoutType);
