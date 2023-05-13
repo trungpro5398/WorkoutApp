@@ -74,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        //Open Login and registration first before any other fragment, Can comment it out to test other fragements !
-//        auth = FirebaseAuth.getInstance();
-//
-//        user = auth.getCurrentUser();
-//        if (user == null){
-//            Intent intent = new Intent(getApplicationContext(), Login.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        auth = FirebaseAuth.getInstance();
+
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+            finish();
+        }
 
 
         workoutViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
