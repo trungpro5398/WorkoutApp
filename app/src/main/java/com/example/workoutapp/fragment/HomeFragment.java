@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             sensorManager.registerListener(this, tempSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
         else {
-            Toast.makeText(getActivity(), "No step sensor on this device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No temperature sensor on this device", Toast.LENGTH_SHORT).show();
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -192,7 +192,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         if (event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE) {
             float temperature = event.values[0];
             String stringTemp = Float.toString(temperature);
-            binding.tempText.setText(stringTemp);
+            if (stringTemp != null ) {
+                binding.tempText.setText(stringTemp);
+            }
+
             if (temperature > 18) {
                 binding.tempAdvice.setText("It's a great day to go for a run outside!");
             }
