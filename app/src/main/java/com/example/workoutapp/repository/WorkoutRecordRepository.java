@@ -2,7 +2,10 @@ package com.example.workoutapp.repository;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.workoutapp.dao.WorkoutRecordDao;
 import com.example.workoutapp.entity.database.WorkoutDatabase;
@@ -31,5 +34,9 @@ public class WorkoutRecordRepository {
                 workoutRecordDao.insert(record);
             }
         });
+    }
+
+    public LiveData<List<WorkoutRecord>> getAllUserWorkouts(String id){
+        return workoutRecordDao.getAllUserWorkoutRecords(id);
     }
 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.Transformations;
 
 import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutRecord;
+import com.example.workoutapp.repository.UserRepository;
 import com.example.workoutapp.utils.WorkoutCalorieCalculator;
 import com.example.workoutapp.utils.WorkoutUtils;
 import com.example.workoutapp.model.WorkoutType;
@@ -49,7 +50,8 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     public WorkoutRecordViewModel (@NonNull Application application) {
         super(application);
         wrRepository = new WorkoutRecordRepository(application);
-        allWorkoutRecords = wrRepository.getAllWorkoutRecords();
+        String userId = UserRepository.getUserRepository().getUserId();
+        allWorkoutRecords = userId != null ? wrRepository.getAllUserWorkouts(userId) : new MutableLiveData<>(new ArrayList<>());
         today = getTodayDate();
         setSelectedDate(today);
         todayWorkoutRecords = Transformations.map(allWorkoutRecords, records -> {
@@ -142,6 +144,11 @@ public class WorkoutRecordViewModel extends AndroidViewModel {
     }
 
     public void insert(WorkoutRecord workoutRecord) {
+        String userId = UserRepository.getUserRepository().getUserId();
+        if (userId != null){
+            workoutRecord.setUserId(userId);
+        }
+
         wrRepository.insert(workoutRecord);
     }
     public LiveData<Integer> getDailyDuration(){

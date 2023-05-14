@@ -1,6 +1,7 @@
 package com.example.workoutapp.repository;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,6 +82,15 @@ public class UserRepository {
 
     public MutableLiveData<String> getUserName() {
         return name;
+    }
+
+    @Nullable
+    public String getUserId() {
+        if (user != null ){
+
+            return user.getUid();
+        }
+        return null;
     }
 
 }

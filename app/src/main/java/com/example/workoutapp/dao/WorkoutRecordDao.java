@@ -22,6 +22,9 @@ public interface WorkoutRecordDao {
     @Query("SELECT * FROM workout_record")
     LiveData<List<WorkoutRecord>> getAllWorkoutRecords();
 
+    @Query("SELECT * FROM workout_record WHERE user_Id = :id")
+    LiveData<List<WorkoutRecord>> getAllUserWorkoutRecords(String id);
+
     @Query("SELECT * FROM workout_record")
     List<WorkoutRecord> getAllWorkoutRecordsSync();
 }
