@@ -44,12 +44,16 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment implements SensorEventListener {
     private HomeFragmentBinding binding;
-    public HomeFragment(){}
+
+    public HomeFragment() {
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
     private WorkoutViewModel workoutViewModel;
 
     private WorkoutRecordViewModel workoutRecordViewModel;
@@ -60,10 +64,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private String userLevel = "beginner"; // Change this to "intermediate" or "advanced" based on the user's level
     private AppCompatActivity mActivity;
 
-    private RecyclerView recyclerView2;
     private List<Workout> newVideos;
-    private RecyclerView.LayoutManager layoutManager;
-//    private HomeNewVideosAdapter adapter;
     private WorkoutAdapter newVidAdapter;
     private TextView durationTextView;
 
@@ -75,6 +76,9 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         binding = HomeFragmentBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        durationTextView = binding.activeTimeValue;
+
+        //  Setup ViewModels
         ViewModelProvider viewModelProvider = new ViewModelProvider(this);
         homeViewModel = viewModelProvider.get(HomeViewModel.class);
         subscribeToHomeViewModel();
@@ -82,12 +86,13 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         workoutViewModel = viewModelProvider.get(WorkoutViewModel.class);
         workoutAdapter = new WorkoutAdapter();
 
-        durationTextView = binding.activeTimeValue;
         workoutRecordViewModel = viewModelProvider.get(WorkoutRecordViewModel.class);
         subscribeToWorkoutRecordViewModel();
-        binding.todayDate.setText(workoutRecordViewModel.getTodayDateDisplay());
-        recyclerView = view.findViewById(R.id.recommended_vids);
 
+        binding.todayDate.setText(workoutRecordViewModel.getTodayDateDisplay());
+
+        // Set up recommended view recycler view
+        recyclerView = view.findViewById(R.id.recommended_vids);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(workoutAdapter);
@@ -107,6 +112,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             navigationView.setCheckedItem(R.id.nav_search);
 
         });
+
+        // Setup Sensor
         SensorManager sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 
         Sensor tempSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -114,10 +121,11 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         if (tempSensor != null) {
             sensorManager.registerListener(this, tempSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-        else {
+        } else {
             Toast.makeText(getActivity(), "No temperature sensor on this device", Toast.LENGTH_SHORT).show();
         }
+
+        // Setup recommended videos tab listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -148,9 +156,15 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             }
         });
 
+        // Setup New videos recycler
+        setupNewVideosRecycler();
 
+        // Setup observers to get videos for recyclers
+        fetchRandomWorkoutsByLevel(userLevel);
+        return view;
+    }
 
-        // New videos
+    private void setupNewVideosRecycler() {
         workoutViewModel.getNewRandomWorkouts(userLevel, 10);
         newVideos = workoutViewModel.getNewRandomWorkouts(userLevel, 10).getValue();
         newVidAdapter = new WorkoutAdapter();
@@ -166,18 +180,14 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                     .replace(R.id.fragment_container, videoFragment)
                     .addToBackStack(null)
                     .commit();
-        } );
+        });
 
         binding.newWorkoutsVids.setAdapter(newVidAdapter);
-        layoutManager = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
         binding.newWorkoutsVids.setLayoutManager(layoutManager);
-
-
-        fetchRandomWorkoutsByLevel(userLevel);
-        return view;
     }
 
-    private void subscribeToHomeViewModel(){
+    private void subscribeToHomeViewModel() {
         homeViewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -185,27 +195,30 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             }
         });
     }
+
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE) {
+        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
             float temperature = event.values[0];
             String stringTemp = Float.toString(temperature);
-            if (binding != null  ){
+            if (binding != null) {
                 if (binding.tempText != null) {
                     String temp = stringTemp == null ? "N/A" : stringTemp;
                     binding.tempText.setText(temp);
                 }
                 if (temperature > 18) {
                     binding.tempAdvice.setText("It's a great day to go for a run outside!");
-                }
-                else if (temperature < 18) {
+                } else if (temperature < 18) {
                     binding.tempAdvice.setText("It's brisk, a great day to work out at the gym");
                 }
             }
         }
     }
+
     private void subscribeToWorkoutRecordViewModel() {
         workoutRecordViewModel.getAllWorkoutRecords().observe(getViewLifecycleOwner(), new Observer<List<WorkoutRecord>>() {
             @Override
@@ -222,7 +235,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         workoutRecordViewModel.getTotalCalories().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer calories) {
-                Pair<String,String> text = homeViewModel.getCaloriesText(calories);
+                Pair<String, String> text = homeViewModel.getCaloriesText(calories);
                 String value = text.first;
                 String unit = text.second;
                 binding.caloriesValue.setText(value);
@@ -232,7 +245,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
     }
 
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
     }
@@ -243,6 +256,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             workoutAdapter.setWorkoutList(workouts);
         });
 
+        // Retrieve videos for new workouts
         workoutViewModel.getNewRandomWorkouts(level, 10).observe(getViewLifecycleOwner(), workouts -> {
             newVidAdapter.setWorkoutList(workouts);
         });
