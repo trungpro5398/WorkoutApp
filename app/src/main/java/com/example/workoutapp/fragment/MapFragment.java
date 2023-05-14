@@ -1,4 +1,5 @@
 package com.example.workoutapp.fragment;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -30,7 +31,7 @@ import java.util.Locale;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     private FusedLocationProviderClient fusedLocationClient;
 
     @Nullable
@@ -48,7 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             showUserLocation();
@@ -66,16 +67,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void showUserLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), location -> {
                 if (location != null) {
                     LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 15));
 
-                    // Show a marker at the user's location
-                    mMap.addMarker(new MarkerOptions().position(userLatLng).title("User's Location"));
+
 
                     // Get the user's address
                     Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -84,7 +84,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         if (addresses != null && !addresses.isEmpty()) {
                             Address address = addresses.get(0);
                             String userAddress = address.getAddressLine(0);
-                            // Use the userAddress string as needed
+                            // Show a marker at the user's location
+                            googleMap.addMarker(new MarkerOptions().position(userLatLng).title("User's Location: " + userAddress ));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

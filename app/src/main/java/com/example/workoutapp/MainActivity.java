@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
         Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
 
-         fetchWorkouts();
+        // fetchWorkouts();
     }
 
     private void fetchWorkouts() {
