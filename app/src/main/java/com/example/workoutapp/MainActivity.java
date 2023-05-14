@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         PeriodicWorkRequest uploadWorkRequest =
                 new PeriodicWorkRequest.Builder(UploadWorker.class, 24, TimeUnit.HOURS)
                         .build();
-        WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
+        WorkManager.getInstance(MainActivity.this).enqueueUniquePeriodicWork("BackupRoomEveryNight", ExistingPeriodicWorkPolicy.KEEP,uploadWorkRequest);
         Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
 
          fetchWorkouts();
