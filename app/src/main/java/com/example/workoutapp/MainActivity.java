@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         WorkManager.getInstance(MainActivity.this).enqueue(uploadWorkRequest);
         Log.d("BackupRoomEveryNight", " for every 24 hours called at " + new Date().getTime());
 
-        // fetchWorkouts();
+         fetchWorkouts();
     }
 
     private void fetchWorkouts() {
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             call = service.getWorkoutVideos(query, "AIzaSyA8yQYb2T6yPTFBsBf7ZUhhtwW7lcPL7Dw");
             //        Call<YouTubeResponse> call = service.getWorkoutVideos(query, "AIzaSyA4J0UTDplJQyGVFgYUiyaDqOC3HcYFKeM");
-//        Call<YouTubeResponse> call = service.getWorkoutVideos(query, "dummy");
         }
         call.enqueue(new Callback<YouTubeResponse>() {
             @Override
