@@ -192,15 +192,17 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         if (event.sensor.getType()== Sensor.TYPE_AMBIENT_TEMPERATURE) {
             float temperature = event.values[0];
             String stringTemp = Float.toString(temperature);
-            if (stringTemp != null ) {
-                binding.tempText.setText(stringTemp);
-            }
-
-            if (temperature > 18) {
-                binding.tempAdvice.setText("It's a great day to go for a run outside!");
-            }
-            else if (temperature < 18) {
-                binding.tempAdvice.setText("It's brisk, a great day to work out at the gym");
+            if (binding != null  ){
+                if (binding.tempText != null) {
+                    String temp = stringTemp == null ? "N/A" : stringTemp;
+                    binding.tempText.setText(temp);
+                }
+                if (temperature > 18) {
+                    binding.tempAdvice.setText("It's a great day to go for a run outside!");
+                }
+                else if (temperature < 18) {
+                    binding.tempAdvice.setText("It's brisk, a great day to work out at the gym");
+                }
             }
         }
     }
