@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.workoutapp.R;
-import com.example.workoutapp.entity.Workout;
 import com.example.workoutapp.entity.WorkoutType;
 
 import java.util.ArrayList;
