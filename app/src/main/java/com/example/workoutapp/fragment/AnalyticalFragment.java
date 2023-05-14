@@ -68,170 +68,12 @@ public class AnalyticalFragment extends Fragment {
     private String CALORIES_GOAL = "1000";
     private String dailyDurationGoal = "20";
 
+    private static final int BAR_CHART = 1;
+
+
     public AnalyticalFragment() {
 
     }
-
-    final static HashMap<Float, String> getXAxisLabelMap(List<String> list) {
-        HashMap<Float, String> map = new HashMap<>();
-        for (int i = 0; i < list.size(); i++) {
-            map.put(Float.valueOf(i), list.get(i));
-        }
-        return map;
-    }
-
-    private void updateCharts(){
-        if(workoutRecordViewModel.getSelectedDayTotalDuration() > 0){
-            List<WorkoutRecord> workoutRecordList = workoutRecordViewModel.getAllWorkoutTypeDurations();
-            if (workoutRecordList != null && workoutRecordList.size() > 0) {
-                createBarChart(workoutRecordList);
-                createPieChart(workoutRecordList);
-            }
-        }
-        else{
-            binding.barChart.setData(null);
-            binding.barChart.notifyDataSetChanged();
-            binding.barChart.invalidate();
-            binding.chart.setData(null);
-            binding.chart.notifyDataSetChanged();
-            binding.chart.invalidate();
-
-            Log.d("TAG", "updateCharts: no data to chart");
-        }
-    }
-
-    private void createBarChart(List<WorkoutRecord> workoutRecordList) {
-
-            List<BarEntry> entries = new ArrayList<>();
-            List<String> workoutTypes = new ArrayList<>(workoutRecordList.size());
-            for (int i = 0; i < workoutRecordList.size(); i++) {
-                WorkoutRecord record = workoutRecordList.get(i);
-                entries.add(new BarEntry(Float.valueOf(i), Float.parseFloat(record.getWorkoutDuration())));
-                workoutTypes.add(i, record.getWorkoutType());
-            }
-            ;
-//            HashMap<Float, String> xAxisLabelMap = getXAxisLabelMap(workoutTypes);
-
-
-            try {
-
-                String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
-                BarDataSet set = new BarDataSet(entries, label);
-                set.setColors();
-                set.setValueTextSize(15f);
-                set.setValueTextColor(Color.WHITE);
-                set.setColors( getColor(R.color.orange));
-
-
-                BarData data = new BarData(set);
-                data.setBarWidth(0.5f); // set custom bar width
-                data.setValueTextColor(getColor(R.color.white));
-
-                BarChart barChart = binding.barChart;
-                barChart.setData(data);
-                barChart.notifyDataSetChanged();
-                barChart.setFitBars(true); // make the x-axis fit exactly all bars
-
-                Legend legend = barChart.getLegend();
-                legend.setEntries(new ArrayList<>());
-                legend.setTextColor(getColor(R.color.white));
-                legend.setTextSize(15f);
-                legend.setWordWrapEnabled(true);
-
-                YAxis yAxis = barChart.getAxisLeft();
-                yAxis.setTextSize(15f);
-                yAxis.setTextColor(Color.WHITE);
-                yAxis.setGranularity(10f);
-                yAxis.setAxisMinimum(0f);
-                barChart.setAutoScaleMinMaxEnabled(true);
-
-                XAxis xaxis = barChart.getXAxis();
-                xaxis.setTextColor(Color.WHITE);
-                xaxis.setTextSize(15f);
-
-                xaxis.setGranularityEnabled(true);
-                xaxis.setGranularity(1f);
-                xaxis.setAxisMaximum(workoutTypes.size());
-                xaxis.setValueFormatter(new IndexAxisValueFormatter(workoutTypes));
-                xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                xaxis.setLabelRotationAngle(45f);
-                xaxis.setLabelCount(workoutTypes.size());
-                barChart.setHorizontalScrollBarEnabled(true);
-
-
-
-//            xaxis.setValueFormatter(new ValueFormatter() {
-//                @Override
-//                public String getFormattedValue(float value) {
-//                    if (value >= 0 && value <= xAxisLabelMap.size()  ) {
-//                        return xAxisLabelMap.get(value) != null ? xAxisLabelMap.get(value):"" ;
-//                    }
-//                    return "";
-//                }
-//            });
-
-//        ValueFormatter xAxisFormatter = new ValueFormatter() {
-//            @Override
-//            public String getAxisLabel(float value, AxisBase axis) {
-//                WorkoutType type = xAxisLabels.get((int) value);
-//                return StringUtils.capitalize(type.name().toLowerCase());
-//
-//            };
-//
-//
-
-
-                barChart.invalidate(); // refresh
-
-//        BarChart barChartP = new BarChart(getContext());}
-            } catch (NullPointerException e) {
-                Log.d("TAG", "createBarChart: Not good");
-                binding.barChart.setData(null);
-                binding.barChart.notifyDataSetChanged();
-                binding.barChart.invalidate();
-            }
-
-
-    }
-
-    @ColorInt
-    private int getColor(@ColorRes int id) {
-       return ContextCompat.getColor(getContext(), id);
-    }
-    private void createPieChart(List<WorkoutRecord> workoutRecords ) {
-        List<PieEntry> entries = new ArrayList<>();
-        workoutRecords.forEach(record -> {
-                entries.add(new PieEntry(Float.parseFloat(record.getWorkoutDuration()), record.getWorkoutType()));
-            });
-            String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
-            PieDataSet set = new PieDataSet(entries, label);
-            set.setValueTextSize(15f);
-            set.setValueTextColor(getColor(R.color.white));
-
-            set.setColors(getColor(R.color.purple_700), getColor(R.color.teal_700), getColor(R.color.orange), Color.BLUE, getColor(R.color.purple_500));
-
-            PieData data = new PieData(set);
-            data.setValueTextColor(getColor(R.color.white));
-            data.setValueTextSize(15f);
-
-            PieChart pieChart = binding.chart;
-            pieChart.setCenterText(label);
-            pieChart.setCenterTextColor(getColor(R.color.black));
-            pieChart.setCenterTextSize(15f);
-            pieChart.setEntryLabelTextSize(15f);
-
-            Legend legend = pieChart.getLegend();
-            legend.setTextColor(getColor(R.color.white));
-            legend.setTextSize(20f);
-            legend.setWordWrapEnabled(true);
-
-            pieChart.setData(data);
-            pieChart.notifyDataSetChanged();
-
-            pieChart.invalidate();
-
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
     Bundle savedInstanceState) {
         binding = AnalyticalFragmentBinding.inflate(inflater, container, false);
@@ -246,7 +88,7 @@ public class AnalyticalFragment extends Fragment {
         workoutRecordViewModel = new ViewModelProvider(requireActivity()).get(WorkoutRecordViewModel.class);
         subscribeToWorkoutRecordViewModel();
 
-       // Set up calendar listener and ui
+        // Set up calendar listener and ui
         addCalendarSelectListener();
         binding.calendarView.setMaxDate((new Date()).getTime());
         binding.calendarView.setDate(WorkoutUtils.parseDateToMs(workoutRecordViewModel.getSelectedDate().getValue(), "yyyy-MM-dd"));
@@ -263,8 +105,132 @@ public class AnalyticalFragment extends Fragment {
         return view;
 
     }
+    private void updateCharts() {
+        if (workoutRecordViewModel.getSelectedDayTotalDuration() > 0) {
+            List<WorkoutRecord> workoutRecordList = workoutRecordViewModel.getAllWorkoutTypeDurations();
+            if (workoutRecordList != null && workoutRecordList.size() > 0) {
+                createBarChart(workoutRecordList);
+                createPieChart(workoutRecordList);
+            }
+        } else {
+            binding.barChart.setData(null);
+            binding.barChart.notifyDataSetChanged();
+            binding.barChart.invalidate();
 
-    private static final int BAR_CHART = 1;
+            binding.chart.setData(null);
+            binding.chart.notifyDataSetChanged();
+            binding.chart.invalidate();
+
+            Log.d("TAG", "updateCharts: no data to chart");
+        }
+    }
+
+    private void createBarChart(List<WorkoutRecord> workoutRecordList) {
+
+        List<BarEntry> entries = new ArrayList<>();
+        List<String> workoutTypes = new ArrayList<>(workoutRecordList.size());
+        for (int i = 0; i < workoutRecordList.size(); i++) {
+            WorkoutRecord record = workoutRecordList.get(i);
+            entries.add(new BarEntry(Float.valueOf(i), Float.parseFloat(record.getWorkoutDuration())));
+            workoutTypes.add(i, record.getWorkoutType());
+        }
+
+        try {
+
+            String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
+            BarDataSet set = new BarDataSet(entries, label);
+            set.setColors();
+            set.setValueTextSize(15f);
+            set.setValueTextColor(Color.WHITE);
+            set.setColors(getColor(R.color.orange));
+
+
+            BarData data = new BarData(set);
+            data.setBarWidth(0.5f); // set custom bar width
+            data.setValueTextColor(getColor(R.color.white));
+
+            BarChart barChart = binding.barChart;
+            barChart.setData(data);
+            barChart.notifyDataSetChanged();
+            barChart.setFitBars(true); // make the x-axis fit exactly all bars
+
+            Legend legend = barChart.getLegend();
+            legend.setEntries(new ArrayList<>());
+            legend.setTextColor(getColor(R.color.white));
+            legend.setTextSize(15f);
+            legend.setWordWrapEnabled(true);
+
+            YAxis yAxis = barChart.getAxisLeft();
+            yAxis.setTextSize(15f);
+            yAxis.setTextColor(Color.WHITE);
+            yAxis.setGranularity(10f);
+            yAxis.setAxisMinimum(0f);
+            barChart.setAutoScaleMinMaxEnabled(true);
+
+            XAxis xaxis = barChart.getXAxis();
+            xaxis.setTextColor(Color.WHITE);
+            xaxis.setTextSize(15f);
+
+            xaxis.setGranularityEnabled(true);
+            xaxis.setGranularity(1f);
+            xaxis.setAxisMaximum(workoutTypes.size());
+            xaxis.setValueFormatter(new IndexAxisValueFormatter(workoutTypes));
+            xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xaxis.setLabelRotationAngle(45f);
+            xaxis.setLabelCount(workoutTypes.size());
+            barChart.setHorizontalScrollBarEnabled(true);
+            barChart.invalidate(); // refresh
+
+        } catch (NullPointerException e) {
+            Log.d("TAG", "createBarChart: Not good");
+            binding.barChart.setData(null);
+            binding.barChart.notifyDataSetChanged();
+            binding.barChart.invalidate();
+        }
+
+
+    }
+
+    @ColorInt
+    private int getColor(@ColorRes int id) {
+        return ContextCompat.getColor(getContext(), id);
+    }
+
+
+    private void createPieChart(List<WorkoutRecord> workoutRecords) {
+        List<PieEntry> entries = new ArrayList<>();
+        workoutRecords.forEach(record -> {
+            entries.add(new PieEntry(Float.parseFloat(record.getWorkoutDuration()), record.getWorkoutType()));
+        });
+        String label = String.format("Active Time \n%s/%s min", workoutRecordViewModel.getSelectedDayTotalDuration(), dailyDurationGoal);
+        PieDataSet set = new PieDataSet(entries, label);
+        set.setValueTextSize(15f);
+        set.setValueTextColor(getColor(R.color.white));
+
+        set.setColors(getColor(R.color.purple_700), getColor(R.color.teal_700), getColor(R.color.orange), Color.BLUE, getColor(R.color.purple_500));
+
+        PieData data = new PieData(set);
+        data.setValueTextColor(getColor(R.color.white));
+        data.setValueTextSize(15f);
+
+        PieChart pieChart = binding.chart;
+        pieChart.setCenterText(label);
+        pieChart.setCenterTextColor(getColor(R.color.black));
+        pieChart.setCenterTextSize(15f);
+        pieChart.setEntryLabelTextSize(15f);
+
+        Legend legend = pieChart.getLegend();
+        legend.setTextColor(getColor(R.color.white));
+        legend.setTextSize(20f);
+        legend.setWordWrapEnabled(true);
+
+        pieChart.setData(data);
+        pieChart.notifyDataSetChanged();
+
+        pieChart.invalidate();
+
+    }
+
 
     private void addTabListener() {
         tabListener = new TabLayout.OnTabSelectedListener() {
